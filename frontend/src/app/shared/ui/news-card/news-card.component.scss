@@ -1,0 +1,80 @@
+.news-card {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr) 140px;
+  align-items: center;
+  gap: var(--app-spacing-md);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  background: var(--app-surface);
+}
+
+.news-image {
+  width: 160px;
+  height: 90px;
+  object-fit: cover;
+  border-radius:  var(--app-border-radius);
+  margin: var(--app-spacing-md) 0 var(--app-spacing-md) var(--app-spacing-md);
+}
+
+.news-image.fallback {
+  background: var(--app-border);
+  height: 90px;
+  padding: var(--app-spacing-smmd) var(--app-spacing-md);
+}
+
+news-content {
+  min-width: 0;
+}
+
+
+.news-content h3 {
+  margin: 0;
+  font-size: var(--app-font-size-xl);
+  font-weight: var(--app-font-weight-semibold);
+  word-break: break-all;
+  overflow-wrap: break-word;
+}
+
+.news-content p {
+  margin: var(--app-spacing-sm) 0 0;
+  font-size: var(--app-font-size-base);
+  color: var(--app-text-muted);
+  white-space: normal;
+  word-break: break-all;
+  overflow-wrap: break-word;
+}
+
+.news-action {
+  padding-right: var(--app-spacing-md);
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--app-spacing-sm);
+}
+
+@media (max-width: 768px) {
+  .news-card {
+    grid-template-columns: 1fr;
+  }
+
+  .news-date {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    gap: var(--app-spacing-lg);
+    padding: var(--app-spacing-xs) var(--app-spacing-md);
+  }
+
+  .news-image {
+    width: calc(100% - 2 * var(--app-spacing-md));
+    height: 170px;
+    margin: var(--app-spacing-md) var(--app-spacing-md) 0;
+  }
+
+  .news-action {
+    justify-content: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}

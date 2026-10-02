@@ -1,0 +1,470 @@
+<section class="hero"></section>
+
+<section class="container app-page pb-4">
+
+  <app-page-header
+    title="My Tickets"
+    subtitle="See all your upcoming events">
+  </app-page-header>
+
+  @if (successMessage) {
+    <app-alert-message type="success" class="mb-3">
+      {{ successMessage }}
+    </app-alert-message>
+  }
+
+  @if (errorMessage) {
+    <app-alert-message type="warning" class="mb-3">
+      {{ errorMessage }}
+    </app-alert-message>
+  }
+
+  <h2>Upcoming</h2>
+  <div class="bookings-list">
+    @for (booking of paginatedGroupedBookings; track booking.orderId) {
+      <div class="booking-group mt-3">
+
+        <app-event-card
+          [title]="booking.performanceTitle"
+          [subtitle]="'#' + booking.orderId"
+          [startTime]="booking.performanceDate"
+          [showImage]="false">
+
+          <ng-container eventContent>
+            <div class="booking-info-content">
+              <span>{{ booking.performanceDate | date:'HH:mm' }} Uhr</span>
+              <span>{{ booking.venueName }}, {{ booking.hallName }}</span>
+              <span>{{ booking.ticketCount }} Ticket(s)</span>
+              <span>{{ booking.totalPrice | number:'1.2-2' }} EUR</span>
+
+              @if (booking.tickets[0].ticketStatus === 'CANCELLED' || booking.tickets[0].ticketStatus === 'RESERVED') {
+                <span class="ticket-status-badge">{{ booking.tickets[0].ticketStatus }}</span>
+              }
+            </div>
+
+          </ng-container>
+          <ng-container eventActions>
+            <div class="ticket-actions">
+
+              <div class="booking-header-actions" (click)="$event.stopPropagation()">
+                @if (booking.tickets[0].ticketStatus === 'RESERVED') {
+                  <button type="button" class="btn app-btn-outline btn-sm"
+                          data-bs-toggle="modal"
+                          data-bs-target="#purchaseReservedTicketsModal"
+                          (click)="onBuyTicket(booking.tickets[0])">
+                    <i class="bi bi-cart"> Buy</i>
+                  </button>
+                  <button type="button" class="btn btn-outline-danger btn-sm"
+                          data-bs-toggle="modal"
+                          data-bs-target="#confirmCancelReservedTicketDialog"
+                          (click)="onCancelTicket(booking.tickets[0])">
+                    <i class="bi bi-x-circle"> Cancel</i>
+                  </button>
+                } @else if (booking.tickets[0].ticketStatus === 'PURCHASED') {
+                  <button type="button" class="btn app-btn-outline btn-sm"
+                          (click)="downloadInvoicePdf(booking.tickets[0].ticketId)">
+                    <i class="bi bi-receipt"> Invoice</i>
+                  </button>
+                  <button type="button" class="btn btn-outline-danger btn-sm"
+                          data-bs-toggle="modal"
+                          data-bs-target="#confirmCancelPurchasedTicketDialog"
+                          (click)="onCancelTicket(booking.tickets[0])">
+                    <i class="bi bi-x-circle"> Cancel</i>
+                  </button>
+                }
+              </div>
+
+              <button class="btn app-btn-outline btn-sm" (click)="toggleBooking(booking.orderId)">
+                <i class="bi" [ngClass]="isBookingExpanded(booking.orderId) ? 'bi-dash' : 'bi-plus'"></i>
+              </button>
+
+
+            </div>
+          </ng-container>
+        </app-event-card>
+      </div>
+
+
+      @if (isBookingExpanded(booking.orderId)) {
+        <div class="app-schedule-list">
+          @for (ticket of booking.tickets; track ticket.ticketId) {
+            <app-event-card
+              [startTime]="ticket.performanceDate"
+              [compact]="true"
+              [showImage]="false">
+              <ng-container eventContent>
+                <div class="ticket-info">
+
+                  @if (ticket.seat) {
+                    <p><strong> {{ ticket.seat }} </strong></p>
+                  }
+                  @if (ticket.sector) {
+                    <p>{{ ticket.sector }}</p>
+                  }
+                  @if (ticket.finalTicketPrice) {
+                    <p class="ticket-total">{{ ticket.finalTicketPrice | number:'1.2-2' }} EUR
+                    </p>
+                  }
+                  @if (ticket.ticketStatus === 'CANCELLED' || ticket.ticketStatus === 'RESERVED') {
+                    <span class="ticket-status-badge">{{ ticket.ticketStatus }}</span>
+                  } @else {
+                    <span class="ticket-status-badge"> </span>
+                  }
+                </div>
+              </ng-container>
+              <ng-container eventActions>
+                <div class="ticket-actions">
+                  @if (ticket.ticketStatus === 'RESERVED') {
+                    <button type="button" class="btn app-btn-outline btn-sm" title="Buy Ticket"
+                            data-bs-toggle="modal"
+                            data-bs-target="#purchaseReservedTicketsModal"
+                            (click)="onBuySingleTicket(ticket)">
+                      <i class="bi bi-cart"> Buy</i>
+                    </button>
+                    <button type="button"
+                            class="btn btn-outline-danger btn-sm"
+                            title="Cancel Ticket"
+                            data-bs-toggle="modal"
+                            data-bs-target="#confirmCancelReservedTicketDialog"
+                            (click)="onCancelSingleTicket(ticket)">
+                      <i class="bi bi-x-circle"> Cancel</i>
+                    </button>
+                  } @else if (ticket.ticketStatus === 'PURCHASED') {
+                    <button type="button"
+                            class="btn app-btn-outline btn-sm"
+                            title="PDF Ticket"
+                            (click)="downloadTicketPdf(ticket.ticketId)">
+                      <i class="bi bi-ticket-perforated"> Ticket</i>
+                    </button>
+                    <button type="button"
+                            class="btn btn-outline-danger btn-sm"
+                            title="Cancel Ticket"
+                            data-bs-toggle="modal"
+                            data-bs-target="#confirmCancelPurchasedTicketDialog"
+                            (click)="onCancelSingleTicket(ticket)">
+                      <i class="bi bi-x-circle"> Cancel</i>
+                    </button>
+                  }
+                </div>
+              </ng-container>
+            </app-event-card>
+          }
+        </div>
+      }
+    } @empty {
+      <app-empty-state message="No upcoming tickets."></app-empty-state>
+    }
+  </div>
+
+  <app-pagination
+    [currentPage]="upcomingCurrentPage"
+    [totalPages]="upcomingTotalPages"
+    ariaLabel="Upcoming tickets pagination"
+    (pageChange)="onUpcomingPageChanged($event)">
+  </app-pagination>
+
+  <button
+    type="button"
+    class="btn app-btn-outline mt-3 btn-sm"
+    (click)="togglePastTickets()">
+    {{ showPast ? 'Hide Past & Cancelled' : 'Show Past & Cancelled' }}
+  </button>
+
+  @if (showPast) {
+    <h2>Past & Cancelled</h2>
+    <div class="bookings-list">
+      @for (booking of paginatedGroupedPastBookings; track booking.orderId) {
+        <div class="booking-group mt-3">
+
+          <app-event-card
+            [title]="booking.performanceTitle"
+            [subtitle]="'#' + booking.orderId"
+            [startTime]="booking.performanceDate"
+            [showImage]="false">
+
+            <ng-container eventContent>
+              <div class="booking-info-content">
+                <span>{{ booking.performanceDate | date:'HH:mm' }} Uhr</span>
+                <span>{{ booking.venueName }}, {{ booking.hallName }}</span>
+                <span>{{ booking.ticketCount }} Ticket(s)</span>
+                <span>{{ booking.totalPrice | number:'1.2-2' }} EUR</span>
+
+                @if (booking.tickets[0].ticketStatus === 'CANCELLED' || booking.tickets[0].ticketStatus === 'RESERVED') {
+                  <span class="ticket-status-badge">{{ booking.tickets[0].ticketStatus }}</span>
+                }
+              </div>
+
+            </ng-container>
+            <ng-container eventActions>
+              <div class="ticket-actions">
+                <div class="booking-header-actions" (click)="$event.stopPropagation()">
+                  @if (wasTicketPurchasedBefore(booking.tickets[0]) && booking.tickets[0].ticketStatus === 'CANCELLED') {
+                    <button type="button"
+                            class="btn app-btn-outline btn-sm"
+                            title="Cancellation Invoice"
+                            (click)="downloadCancellationInvoicePdf(booking.tickets[0].ticketId)">
+                      <i class="bi bi-receipt"> Invoice</i>
+                    </button>
+                  }@else if(wasTicketPurchasedBefore(booking.tickets[0]) && booking.tickets[0].ticketStatus !== 'CANCELLED') {
+                    <button type="button"
+                            class="btn app-btn-outline btn-sm"
+                            title="Invoice"
+                            (click)="downloadInvoicePdf(booking.tickets[0].ticketId)">
+                      <i class="bi bi-receipt"> Invoice</i>
+                    </button>
+                  }
+                </div>
+
+                <button class="btn app-btn-outline btn-sm" (click)="togglePastBooking(booking.orderId)">
+                  <i class="bi" [ngClass]="isPastBookingExpanded(booking.orderId) ? 'bi-dash' : 'bi-plus'"></i>
+                </button>
+
+              </div>
+            </ng-container>
+          </app-event-card>
+        </div>
+
+        @if (isPastBookingExpanded(booking.orderId)) {
+          <div class="app-schedule-list">
+            @for (ticket of booking.tickets; track ticket.ticketId) {
+              <app-event-card
+                [startTime]="ticket.performanceDate"
+                [compact]="true"
+                [showImage]="false">
+                <ng-container eventContent>
+                  <div class="ticket-info">
+                    @if (ticket.seat) {
+                      <p><strong>{{ ticket.seat }}</strong></p>
+                    }
+                    @if (ticket.sector) {
+                      <p>{{ ticket.sector }}</p>
+                    }
+                    @if (ticket.finalTicketPrice) {
+                      <p class="ticket-total">{{ ticket.finalTicketPrice | number:'1.2-2' }} EUR</p>
+                    }
+                    @if (ticket.ticketStatus === 'CANCELLED' || ticket.ticketStatus === 'RESERVED') {
+                      <span class="ticket-status-badge">{{ ticket.ticketStatus }}</span>
+                    } @else {
+                      <span class="ticket-status-badge"> </span>
+                    }
+                  </div>
+                </ng-container>
+              </app-event-card>
+            }
+          </div>
+        }
+      } @empty {
+        <app-empty-state message="No past or cancelled tickets."></app-empty-state>
+      }
+    </div>
+
+    <app-pagination
+      [currentPage]="pastCurrentPage"
+      [totalPages]="pastTotalPages"
+      ariaLabel="Past tickets pagination"
+      (pageChange)="onPastPageChanged($event)">
+    </app-pagination>
+  }
+
+  <div class="modal fade" id="confirmCancelReservedTicketDialog" tabindex="-1" aria-hidden="true"
+       data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Cancel Reserved Tickets</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <p>Select the reserved tickets from this reservation that you want to cancel.</p>
+
+          @if (!isSingleCancel) {
+            <div class="d-flex gap-2 mb-2">
+              <button type="button" class="btn btn-sm btn-link text-primary text-decoration-none p-0 fw-semibold"
+                      (click)="selectAllReservedTickets()">
+                Select All
+              </button>
+              <span class="text-muted small">|</span>
+              <button type="button" class="btn btn-sm btn-link text-secondary text-decoration-none p-0 fw-semibold"
+                      (click)="clearAllReservedTickets()">
+                Clear All
+              </button>
+            </div>
+          }
+
+          @for (ticket of (isSingleCancel ? singleTicketForModal : cancellableReservedTickets); track ticket.ticketId) {
+            <label class="cancel-ticket-row">
+              <input
+                type="checkbox"
+                [checked]="isReservedTicketSelected(ticket.ticketId)"
+                (change)="toggleReservedTicket(ticket.ticketId, $any($event.target).checked)">
+              <span class="cancel-ticket-details">
+              <span class="cancel-ticket-title">{{ ticket.performanceTitle }}</span>
+              <span class="cancel-ticket-meta">
+                <span>{{ ticket.performanceDate | date:'dd.MM.yyyy HH:mm' }}</span>
+                <span>{{ ticket.sector }}</span>
+                @if (ticket.seat) {
+                  <span>{{ ticket.seat }}</span>
+                }
+                <span>{{ ticket.finalTicketPrice | number:'1.2-2' }} EUR</span>
+              </span>
+            </span>
+            </label>
+          }
+
+          <div class="cancel-summary mt-3">
+            <strong>Summary:</strong>
+            {{ selectedCancellationReservedTickets.length }} ticket(s)
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abort</button>
+          <button
+            type="button"
+            class="btn app-btn-primary"
+            data-bs-dismiss="modal"
+            [disabled]="selectedReservedTicketIds.length === 0"
+            (click)="onConfirmCancelReservedTicket()">
+            Confirm Cancellation
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="confirmCancelPurchasedTicketDialog" tabindex="-1" aria-hidden="true"
+       data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Cancel Purchased Tickets</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Select the bought tickets from this purchase that you want to return.</p>
+
+          @if (!isSingleCancel) {
+            <div class="d-flex gap-2 mb-2">
+              <button type="button" class="btn btn-sm btn-link text-primary text-decoration-none p-0 fw-semibold"
+                      (click)="selectAllPurchasedTickets()">
+                Select All
+              </button>
+              <span class="text-muted small">|</span>
+              <button type="button" class="btn btn-sm btn-link text-secondary text-decoration-none p-0 fw-semibold"
+                      (click)="clearAllPurchasedTickets()">
+                Clear All
+              </button>
+            </div>
+          }
+
+          @for (ticket of (isSingleCancel ? singleTicketForModal : cancellablePurchasedTickets); track ticket.ticketId) {
+            <label class="cancel-ticket-row">
+              <input
+                type="checkbox"
+                [checked]="isPurchasedTicketSelected(ticket.ticketId)"
+                (change)="togglePurchasedTicket(ticket.ticketId, $any($event.target).checked)">
+              <span class="cancel-ticket-details">
+                <span class="cancel-ticket-title">{{ ticket.performanceTitle }}</span>
+                <span class="cancel-ticket-meta">
+                  <span>{{ ticket.performanceDate | date:'dd.MM.yyyy HH:mm' }}</span>
+                  <span>{{ ticket.sector }}</span>
+                  @if (ticket.seat) {
+                    <span>{{ ticket.seat }}</span>
+                  }
+                  <span>{{ ticket.finalTicketPrice | number:'1.2-2' }} EUR</span>
+                </span>
+              </span>
+            </label>
+          }
+
+          <div class="cancel-summary mt-3">
+            <strong>Summary:</strong>
+            {{ selectedCancellationPurchasedTickets.length }} ticket(s),
+            {{ selectedCancellationTotal | number:'1.2-2' }} EUR refund.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abort</button>
+          <button
+            type="button"
+            class="btn app-btn-primary"
+            data-bs-dismiss="modal"
+            [disabled]="selectedPurchasedTicketIds.length === 0"
+            (click)="onConfirmCancelPurchasedTickets()">
+            Confirm Cancellation
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="purchaseReservedTicketsModal" tabindex="-1" aria-hidden="true"
+       data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Purchase Tickets</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          @if (relatedTicketsForPerformance[0]) {
+            <h5 class="mb-3">Performance: {{ relatedTicketsForPerformance[0].performanceTitle }}</h5>
+          }
+
+          <p class="text-secondary small">Select the reserved tickets you want to purchase for this
+            performance:</p>
+
+          @if (!isSingleCancel) {
+            <div class="d-flex gap-2 mb-2">
+              <button type="button" class="btn btn-sm btn-link text-primary text-decoration-none p-0 fw-semibold"
+                      (click)="selectAllTickets()">
+                Select All
+              </button>
+              <span class="text-muted small">|</span>
+              <button type="button" class="btn btn-sm btn-link text-secondary text-decoration-none p-0 fw-semibold"
+                      (click)="clearAllTickets()">
+                Clear All
+              </button>
+            </div>
+          }
+
+          @for (ticket of relatedTicketsForPerformance; track ticket.ticketId) {
+            <label class="cancel-ticket-row">
+              <input type="checkbox" [value]="ticket.ticketId"
+                     [checked]="selectedTicketsToPurchase.includes(ticket)"
+                     (change)="toggleTicketSelection(ticket)">
+              <span class="cancel-ticket-details">
+                <span
+                  class="cancel-ticket-title">{{ ticket.seat ? 'Seat ' + ticket.seat : 'Ticket #' + ticket.ticketId }}</span>
+                <span class="cancel-ticket-meta">
+                  <span>{{ ticket.performanceDate | date:'dd.MM.yyyy HH:mm' }}</span>
+                  <span>{{ ticket.sector }} ({{ ticket.hallName }})</span>
+                  @if (ticket.seat) {
+                    <span>{{ ticket.seat }}</span>
+                  }
+                  <span>{{ ticket.finalTicketPrice | number:'1.2-2' }} EUR</span>
+                </span>
+              </span>
+            </label>
+          }
+
+          <div class="cancel-summary mt-3">
+            <strong>Summary:</strong> {{ selectedTicketsToPurchase.length }} ticket(s)
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abort</button>
+          <button type="button" class="btn app-btn-primary" data-bs-dismiss="modal"
+                  [disabled]="selectedTicketsToPurchase.length === 0"
+                  (click)="goToCheckoutWithTicketIds()">
+            Buy Selected ({{ selectedTicketsToPurchase.length }})
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>

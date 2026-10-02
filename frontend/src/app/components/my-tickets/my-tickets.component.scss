@@ -1,0 +1,139 @@
+h2 {
+  font-size: var(--app-font-size-2xl);
+  font-weight: var(--app-font-weight-semibold);
+  margin: var(--app-spacing-md) 0 var(--app-spacing-sm);
+  margin-bottom: var(--app-spacing-md);
+}
+
+.ticket-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-right: 5px;
+}
+.ticket-actions button {
+  flex: 0 0 auto;
+  min-width: 60px;
+  margin-right: 5px;
+}
+::ng-deep .ticket-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  column-gap: 0.5rem;
+  row-gap: 2px;
+  margin-top: 0.4rem;
+}
+
+.ticket-info p {
+  margin: 2px 0 0;
+}
+
+.cancel-ticket-row input[type="checkbox"] {
+  accent-color: var(--app-accent);
+}
+
+.btn-link.text-primary {
+  color: var(--app-accent) !important;
+}
+
+.booking-group + .app-schedule-list {
+  margin-left: 2.5rem;
+}
+
+.app-schedule-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+
+.booking-info-content {
+  display: flex;
+  gap: 2rem;
+  font-size: var(--app-font-size-m);
+  margin-top: 0.3rem;
+  width: 85%;
+  justify-content: space-between;
+}
+@media (max-width: 768px) {
+  .ticket-info {
+    grid-template-columns: 1fr;
+  }
+
+  .ticket-actions {
+    flex-wrap: wrap;
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .ticket-actions button {
+    margin-right: 0;
+  }
+
+}
+.ticket-label {
+  text-transform: uppercase;
+  color: var(--app-accent);
+  font-weight: var(--app-font-weight-regular);
+}
+
+.ticket-status-badge {
+  grid-column: 4;
+  grid-row: 1 / 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--app-font-size-lg);
+  font-weight: var(--app-font-weight-bold);
+  color: var(--app-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  align-self: center;
+}
+
+
+.max-height-modal-list {
+  max-height: 240px;
+}
+
+.custom-modal-label {
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+
+  &:hover {
+    background-color: #f8f9fa;
+  }
+}
+
+.cancel-ticket-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.cancel-ticket-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.cancel-ticket-title {
+  font-weight: var(--app-font-weight-semibold);
+  line-height: 1.25;
+}
+
+.cancel-ticket-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  color: rgba(0, 0, 0, 0.68);
+  font-size: var(--app-font-size-sm);
+  line-height: 1.35;
+}
+
+.cancel-summary {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: rgba(74, 21, 75, 0.08);
+}

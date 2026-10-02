@@ -1,0 +1,132 @@
+.performance-create__required-hint {
+  color: var(--bs-secondary-color);
+  font-size: 0.875rem;
+}
+
+.performance-create__duration-box {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.performance-create__duration-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.875rem;
+  color: var(--bs-secondary-color);
+}
+
+.field-with-action {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+}
+
+.artist-area {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.suggestions-list {
+  border: 1px solid var(--app-border);
+  border-radius: 0.4rem;
+  background: var(--app-surface);
+  overflow: hidden;
+}
+
+.suggestion-item {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: var(--app-surface);
+  padding: 0.45rem 0.6rem;
+}
+
+.suggestion-item:hover {
+  background: #f4edf4;
+}
+
+.selected-artists {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.artist-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.45rem;
+  border-radius: 0.4rem;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  color: black;
+  font-size: 1rem;
+}
+
+.artist-chip button {
+  border: 0;
+  background: transparent;
+  color: black;
+  padding: 0;
+  line-height: 1;
+}
+
+.hall-pricing-shell {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  border: 1px solid var(--app-border);
+  border-radius: 0.6rem;
+  background: var(--app-surface);
+  padding: 1rem;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.hall-pricing-head h5 {
+  margin: 0;
+}
+
+.hall-pricing-head small {
+  color: #475569;
+}
+
+
+.sector-pricing-table-wrap {
+  border: 1px solid var(--app-border);
+  border-radius: 0.5rem;
+}
+
+.sector-pricing-table {
+  min-width: 540px;
+}
+
+.sector-price-cell {
+  width: 170px;
+  min-width: 170px;
+}
+
+.sector-price-row--focused {
+  --bs-table-bg: #faf5ff;
+}
+
+.sector-selection-hint {
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .performance-create__duration-box {
+    grid-template-columns: 1fr;
+  }
+
+  .field-with-action {
+    grid-template-columns: 1fr;
+  }
+
+  .sector-pricing-table {
+    min-width: 480px;
+  }
+}

@@ -1,0 +1,85 @@
+<section class="hero">
+</section>
+
+<section class="container app-page pb-4">
+
+  <app-page-header
+    title="News"
+    subtitle="Latest announcements and updates">
+    <div actions>
+      @if (isAdmin()) {
+        <button type="button" class="btn app-btn-primary" routerLink="/admin/news/new">+ Create News</button>
+      }
+    </div>
+  </app-page-header>
+
+  @if (errorMessage) {
+    <app-alert-message type="danger" class="mb-3">{{ errorMessage }}</app-alert-message>
+  }
+
+  <h2>Unread News</h2>
+  @if (newsEntries.length > 0) {
+    <div class="app-schedule-list">
+      @for (item of newsEntries; track item.id) {
+        <app-news-card
+          [title]="item.title"
+          [summary]="item.summary"
+          [image]="imageSrc(item)">
+          <div newsActions>
+            <a [routerLink]="['/news', item.id]" class="btn app-btn-primary btn">
+              Details
+            </a>
+          </div>
+        </app-news-card>
+  }
+  </div>
+
+    <app-pagination
+      [currentPage]="unreadCurrentPage"
+      [totalPages]="unreadTotalPages"
+      ariaLabel="Unread news pagination"
+      (pageChange)="onUnreadPageChanged($event)">
+    </app-pagination>
+  } @else {
+  <app-empty-state message="You're all caught up!"></app-empty-state>
+}
+
+
+  <button
+    type="button"
+    class="btn app-btn-outline mt-4 btn-sm"
+    (click)="toggleShowRead()">
+    {{showRead ? 'Hide already read news' : 'Show already read news'}}
+  </button>
+
+  @if (showRead) {
+    <h2 class="mt-4">Already Read</h2>
+    @if (readNewsEntries.length > 0) {
+      <div class="app-schedule-list">
+        @for (item of readNewsEntries; track item.id) {
+          <app-news-card
+            [title]="item.title"
+            [summary]="item.summary"
+            [image]="imageSrc(item)">
+            <div newsActions>
+              <a [routerLink]="['/news', item.id]" class="btn app-btn-outline btn">
+                Details
+              </a>
+            </div>
+          </app-news-card>
+        }
+      </div>
+
+      <app-pagination
+        [currentPage]="readCurrentPage"
+        [totalPages]="readTotalPages"
+        ariaLabel="Read news pagination"
+        (pageChange)="onReadPageChanged($event)">
+      </app-pagination>
+    } @else {
+      <app-empty-state message="No read news archive available"></app-empty-state>
+    }
+  }
+
+
+</section>

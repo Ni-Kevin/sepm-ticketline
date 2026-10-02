@@ -1,0 +1,35 @@
+<article class="event-card" [class.no-image]="!showImage">
+
+  @if (!compact) {
+    <div class="event-date">
+      <span class="month">{{ startTime ? (startTime | date:'MMM') : '--' }}</span>
+      <span class="day">{{ startTime ? (startTime | date:'dd') : '--' }}</span>
+      <span class="year">{{ startTime ? (startTime | date:'yyyy') : '--' }}</span>
+    </div>
+
+  } @else {
+    <div class="event-date compact-icon">
+      <i class="bi bi-ticket-perforated"></i>
+    </div>
+  }
+
+  @if (showImage) {
+    @if (image) {
+      <img class="event-image" [src]="'data:image/*;base64,' + image" alt="Event image">
+    } @else {
+      <div class="event-image fallback"></div>
+    }
+  }
+
+  <div class="event-content">
+    @if (!compact) {
+      <h3>{{ title }}  @if (subtitle) {<span class="event-subtitle">{{ subtitle }}</span>}</h3>
+    }
+    <ng-content select="[eventContent]"></ng-content>
+  </div>
+
+
+  <div class="event-action">
+    <ng-content select="[eventActions]"></ng-content>
+  </div>
+</article>

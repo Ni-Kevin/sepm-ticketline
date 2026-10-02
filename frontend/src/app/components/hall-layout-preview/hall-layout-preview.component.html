@@ -1,0 +1,51 @@
+@if (layout) {
+  <section class="workspace-card">
+    @if (showZoomControls) {
+      <div class="zoom-toolbar workspace-zoom-toolbar">
+      <button type="button" class="zoom-button" (click)="zoomCanvasOut()">−</button>
+      <button type="button" class="zoom-value" (click)="resetCanvasZoom()">{{ (canvasZoom * 100) | number:'1.0-0' }}%</button>
+      <button type="button" class="zoom-button" (click)="zoomCanvasIn()">+</button>
+      </div>
+    }
+
+    <div class="canvas-scroll" [style.height.px]="fixedHeightPx">
+      <div class="hall-canvas position-relative"
+           [style.width.px]="layout.width * renderScale"
+           [style.height.px]="layout.length * renderScale"
+           [style.--grid-size.px]="renderScale"
+           (click)="onCanvasClick($event)">
+
+        @for (area of layout.areas; track area.id ?? $index) {
+          <div class="hall-area"
+               [class.selected-area]="selectedArea === area"
+               [class.unassigned-area]="isAreaUnassigned(area)"
+               [style.left.px]="area.positionX * renderScale"
+               [style.top.px]="area.positionY * renderScale"
+               [style.width.px]="area.width * renderScale"
+               [style.height.px]="area.length * renderScale"
+               [style.background-color]="getAreaColor(area)"
+               [class.hall-area--interactive]="interactive"
+               (mousedown)="interactive && onAreaDragStart(area, $event)"
+               (click)="(interactive || selectable) && onAreaSelect(area, $event)">
+            <span class="hall-area-label" [title]="getAreaLabel(area)">{{ getAreaLabel(area) }}</span>
+            <span class="hall-area-badge">{{ getAreaBadge(area) }}</span>
+
+            @if (interactive) {
+              <span class="hall-area-resize-handle" aria-hidden="true" (mousedown)="onAreaResizeStart(area, $event)"></span>
+            }
+
+            @if (area.type === 'SEATING') {
+              <div class="seat-preview-layer">
+                @for (seat of getAreaSeats(area); track seat.id ?? (seat.positionX + '-' + seat.positionY)) {
+                  <span class="seat-preview-dot"
+                        [style.left.%]="((seat.positionX - area.positionX) + 0.5) / area.width * 100"
+                        [style.top.%]="((seat.positionY - area.positionY) + 0.5) / area.length * 100"></span>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+}

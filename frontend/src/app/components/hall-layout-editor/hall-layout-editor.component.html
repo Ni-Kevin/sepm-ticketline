@@ -1,0 +1,194 @@
+<section class="hero"></section>
+
+<div class="layout-editor-page">
+  <div class="layout-editor-shell">
+    <app-page-header
+      title="Manage hall areas"
+      [subtitle]="layout ? layout.name + ' • ' + layout.width + 'm × ' + layout.length + 'm' : ''">
+      <div actions class="editor-header-actions">
+        @if (layout) {
+          <a class="btn btn-light border app-btn-outline" [routerLink]="['/admin/halls', layout.hallId, 'edit']">Edit details</a>
+        }
+        <button class="btn app-btn-primary" [disabled]="!layout || saving || isLayoutLocked" (click)="saveLayout()">
+          @if (saving) {
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          }
+          Save layout
+        </button>
+      </div>
+    </app-page-header>
+
+    @if (errorMessages.length > 0) {
+      <app-alert-message class="mb-3" type="danger">
+        <ul class="mb-0 ps-3">
+          @for (message of errorMessages; track message) {
+            <li>{{ message }}</li>
+          }
+        </ul>
+      </app-alert-message>
+    }
+
+    @if (successMessage) {
+      <app-alert-message class="mb-3" type="success">{{ successMessage }}</app-alert-message>
+    }
+
+    @if (isLayoutLocked) {
+      <app-alert-message class="mb-3" type="info">
+        This hall layout is locked because the hall is already used in a performance.
+      </app-alert-message>
+    }
+
+    @if (layout) {
+      <div class="editor-body">
+        <main class="editor-main">
+          <app-alert-message class="mb-3" type="info">
+            <details class="layout-editor-guide">
+              <summary><strong>How to use the hall layout editor</strong></summary>
+              <ol class="mb-0 mt-2 ps-3">
+                <li>Click inside the hall canvas to create a new area.</li>
+                <li>Select an area to rename it, change its type, set its color, or update the standing capacity.</li>
+                <li>Drag an area to move it and use the bottom-right handle to resize it.</li>
+                <li>Use <strong>Seating</strong> for seats, <strong>Standing</strong> for open audience zones, and <strong>Stage</strong> for the performance area.</li>
+                <li>When you assign an area to <strong>Seating</strong>, the editor automatically fills the entire area with seats.</li>
+                <li>If you enlarge a seating area later, new seats are <strong>not</strong> added automatically. Existing seats stay, and seats outside the resized area are removed.</li>
+                <li>If you want the whole seating area to be filled again, reassign the area type to <strong>Seating</strong>.</li>
+                <li>When a seating area is selected, you can also use the seat grid below to add or remove individual seats manually.</li>
+                <li>Save the layout after your changes are complete.</li>
+              </ol>
+            </details>
+          </app-alert-message>
+
+          <section class="workspace-card">
+            <div class="workspace-toolbar">
+              <div class="context-toolbar" [class.context-toolbar--inactive]="!selectedArea">
+                @if (selectedSector) {
+                  <input
+                    class="form-control toolbar-input toolbar-input--name"
+                    type="text"
+                    [ngModel]="selectedSector.name"
+                    name="selectedSectorName"
+                    placeholder="Name"
+                    aria-label="Area name"
+                    [disabled]="!selectedArea || isLayoutLocked"
+                    (ngModelChange)="updateSelectedSectorName($event)"
+                    (blur)="normalizeSelectedSector()">
+                } @else {
+                  <input
+                    class="form-control toolbar-input toolbar-input--name"
+                    type="text"
+                    [value]="selectedArea?.type === 'STAGE' ? 'Stage' : ''"
+                    placeholder="Name"
+                    aria-label="Area name"
+                    disabled>
+                }
+
+                <select
+                  class="form-select toolbar-input toolbar-input--type"
+                  [ngModel]="selectedArea?.type ?? 'STANDING'"
+                  name="selectedAreaType"
+                  aria-label="Area type"
+                  [disabled]="!selectedArea || isLayoutLocked"
+                  (ngModelChange)="selectedArea && updateSelectedAreaType($event)">
+                  <option value="SEATING">Seating</option>
+                  <option value="STANDING">Standing</option>
+                  <option value="STAGE">Stage</option>
+                </select>
+
+                <input
+                  class="form-control form-control-color toolbar-color-input"
+                  type="color"
+                  [ngModel]="selectedSector?.color || (selectedArea ? getAreaColor(selectedArea) : '#2563eb')"
+                  name="selectedAreaColor"
+                  aria-label="Area color"
+                  [disabled]="!selectedSector || !selectedArea || isLayoutLocked"
+                  (ngModelChange)="selectedSector && (selectedSector.color = $event)"
+                  (change)="selectedSector && normalizeSelectedSector()">
+
+                @if (selectedArea && selectedSector?.type === 'STANDING') {
+                  <div class="toolbar-metric toolbar-metric--capacity">
+                    <span class="toolbar-metric-label">Cap</span>
+                    <input
+                      class="form-control toolbar-number-input"
+                      type="number"
+                      [ngModel]="selectedSector?.capacity"
+                      name="selectedSectorCapacity"
+                      min="1"
+                      aria-label="Standing capacity"
+                      placeholder="Cap"
+                      [disabled]="isLayoutLocked"
+                      (ngModelChange)="selectedSector && (selectedSector.capacity = $event)"
+                      (change)="normalizeSelectedSector()">
+                  </div>
+                } @else {
+                  <div class="toolbar-metric toolbar-metric--capacity toolbar-metric--placeholder">
+                    <span class="toolbar-metric-label">Cap</span>
+                    <input class="form-control toolbar-number-input" type="number" placeholder="Cap" disabled>
+                  </div>
+                }
+
+                <div class="toolbar-metric">
+                  <span class="toolbar-metric-label">X</span>
+                  <input class="form-control toolbar-number-input" type="number" [ngModel]="selectedArea?.positionX ?? 0" name="selectedAreaX" min="0" [attr.max]="layout.width - 1" aria-label="Area x" placeholder="X" [disabled]="!selectedArea" readonly>
+                </div>
+                <div class="toolbar-metric">
+                  <span class="toolbar-metric-label">Y</span>
+                  <input class="form-control toolbar-number-input" type="number" [ngModel]="selectedArea?.positionY ?? 0" name="selectedAreaY" min="0" [attr.max]="layout.length - 1" aria-label="Area y" placeholder="Y" [disabled]="!selectedArea" readonly>
+                </div>
+                <div class="toolbar-metric">
+                  <span class="toolbar-metric-label">W</span>
+                  <input class="form-control toolbar-number-input" type="number" [ngModel]="selectedArea?.width ?? 1" name="selectedAreaWidth" min="1" [attr.max]="getSelectedAreaMaxWidth()" aria-label="Area width" placeholder="W" [disabled]="!selectedArea" readonly>
+                </div>
+                <div class="toolbar-metric">
+                  <span class="toolbar-metric-label">L</span>
+                  <input class="form-control toolbar-number-input" type="number" [ngModel]="selectedArea?.length ?? 1" name="selectedAreaLength" min="1" [attr.max]="getSelectedAreaMaxLength()" aria-label="Area length" placeholder="L" [disabled]="!selectedArea" readonly>
+                </div>
+
+                <button type="button" class="btn btn-outline-danger toolbar-delete-button" [disabled]="!selectedArea || isLayoutLocked" (click)="deleteSelectedArea()">Remove</button>
+              </div>
+            </div>
+
+            <div class="zoom-toolbar workspace-zoom-toolbar">
+              <button type="button" class="zoom-button" (click)="zoomCanvasOut()">−</button>
+              <button type="button" class="zoom-value" (click)="resetCanvasZoom()">{{ (canvasZoom * 100) | number:'1.0-0' }}%</button>
+              <button type="button" class="zoom-button" (click)="zoomCanvasIn()">+</button>
+            </div>
+
+            <app-hall-layout-preview
+              [layout]="layout"
+              [selectedArea]="selectedArea"
+              [interactive]="!isLayoutLocked"
+              [showZoomControls]="false"
+              [externalScale]="effectiveScale"
+              [fixedHeightPx]="720"
+              [stageDefaultColor]="'#d97706'"
+              [standingDefaultColor]="'#0f766e'"
+              [seatingDefaultColor]="'#2563eb'"
+              (canvasClicked)="onCanvasClick($event)"
+              (areaSelected)="selectArea($event.area, $event.event)"
+              (areaDragStarted)="startAreaDrag($event.area, $event.event)"
+              (areaResizeStarted)="startAreaResize($event.area, $event.event)">
+            </app-hall-layout-preview>
+          </section>
+
+          @if (selectedArea?.type === 'SEATING' && selectedSector?.type === 'SEATING' && !isLayoutLocked) {
+            <app-seat-grid-editor
+              class="editor-seat-grid"
+              [selectedArea]="selectedArea"
+              [selectedSeatCount]="selectedSeatCount"
+              [seatGridZoom]="seatGridZoom"
+              [seatGridRows]="seatGridRows"
+              [seatGridColumns]="seatGridColumns"
+              [seatGridTemplateColumns]="seatGridTemplateColumns"
+              [occupiedSeatKeys]="occupiedSeatKeys"
+              [seatTitles]="seatTitles"
+              (zoomOut)="zoomSeatGridOut()"
+              (resetZoom)="resetSeatGridZoom()"
+              (zoomIn)="zoomSeatGridIn()"
+              (seatToggled)="toggleSeat($event.gridX, $event.gridY)">
+            </app-seat-grid-editor>
+          }
+        </main>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,14 @@
+<article class="artist-card">
+  <div class="artist-card__badge">{{ initials() }}</div>
+
+  <div class="artist-card__content">
+    <h3>{{ displayName() }}</h3>
+    @if (showFullName()) {
+      <p>{{ fullName() }}</p>
+    }
+  </div>
+
+  <div class="artist-card__actions">
+    <ng-content select="[artistActions]"></ng-content>
+  </div>
+</article>

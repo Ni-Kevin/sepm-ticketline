@@ -1,0 +1,15 @@
+@use './styles/tokens';
+@use './styles/layout';
+@use './styles/buttons';
+@use './styles/forms';
+@use './styles/tables';
+@use './styles/search';
+
+body {
+  background-color: var(--app-bg);
+}
+
+.app-schedule-list {
+  display: grid;
+  gap: 0.9rem;
+}

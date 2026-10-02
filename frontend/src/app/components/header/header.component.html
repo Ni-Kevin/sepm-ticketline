@@ -1,0 +1,37 @@
+<nav class="top-nav">
+  <a class="brand" routerLink="/">Ticketline 4.0</a>
+
+  <div class="main-links">
+    <a routerLink="/">Home</a>
+
+    @if (authService.isLoggedIn()) {
+      <a routerLink="/news">News</a>
+      <a routerLink="/my-tickets">My Tickets</a>
+    }
+    <a routerLink="/artists">Artists</a>
+    <a routerLink="/events">Events</a>
+    <a routerLink="/performances">Performances</a>
+  </div>
+
+  <div class="right-links">
+    @if (authService.isAdmin()) {
+      <div class="admin-links">
+        <span class="admin-label">Admin</span>
+        <a routerLink="/admin/venues" routerLinkActive="active">Venues</a>
+        <a routerLink="/admin/halls" routerLinkActive="active">Halls</a>
+        <a routerLink="/admin/users" routerLinkActive="active">Users</a>
+      </div>
+    }
+
+    <div class="account-links">
+      @if (!authService.isLoggedIn()) {
+        <a class="btn app-btn-header btn-sm" routerLink="/login" routerLinkActive="active">Login</a>
+      }
+
+      @if (authService.isLoggedIn()) {
+        <a class="btn app-btn-header btn-sm" routerLink="/profile" routerLinkActive="active">My Profile</a>
+        <a class="btn app-btn-header btn-sm" routerLink="/" (click)="logout()">Logout</a>
+      }
+    </div>
+  </div>
+</nav>

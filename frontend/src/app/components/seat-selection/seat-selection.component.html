@@ -1,0 +1,172 @@
+<section class="hero"></section>
+
+<div class="layout-editor-page">
+  <div class="layout-editor-shell">
+    <app-page-header [title]="viewMode === 'HALL' ? 'Select Sector' : 'Select Seats'">
+    </app-page-header>
+
+    @if (loading) {
+      <div class="text-center my-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    }
+
+    @if (!loading && errorMessage) {
+      <app-alert-message type="danger" class="mb-3">{{ errorMessage }}</app-alert-message>
+    }
+
+    @if (!loading) {
+      @if (viewMode === 'HALL' && hallLayout) {
+        <div class="hall-view">
+          <div class="text-center mb-4">
+            <h2 class="fw-bold">{{ hallLayout.hallName }}</h2>
+            <p class="text-muted">{{ hallLayout.venueName }} | {{ hallLayout.venueStreet }}, {{ hallLayout.venueZip }} {{ hallLayout.venueCity }}, {{hallLayout.venueCountry}}</p>
+          </div>
+
+          <div class="hall-container"
+               [style.aspect-ratio]="hallLayout.hallWidth + '/' + hallLayout.hallLength">
+
+            @for (sector of hallLayout.sectors; track (sector.sectorId || sector.name)) {
+
+              @if (sector.type === 'STAGE') {
+                <div class="sector-box stage-box"
+                     [style.left.%]="(sector.positionX / hallLayout.hallWidth) * 100"
+                     [style.top.%]="(sector.positionY / hallLayout.hallLength) * 100"
+                     [style.width.%]="(sector.width / hallLayout.hallWidth) * 100"
+                     [style.height.%]="(sector.length / hallLayout.hallLength) * 100"
+                     [style.backgroundColor]="sector.color">
+                  <span class="sector-label fw-bold text-uppercase">{{ sector.name }}</span>
+                </div>
+              } @else {
+                <div class="sector-box clickable-sector"
+                     [style.left.%]="(sector.positionX / hallLayout.hallWidth) * 100"
+                     [style.top.%]="(sector.positionY / hallLayout.hallLength) * 100"
+                     [style.width.%]="(sector.width / hallLayout.hallWidth) * 100"
+                     [style.height.%]="(sector.length / hallLayout.hallLength) * 100"
+                     [style.backgroundColor]="sector.color"
+                     (click)="selectSector(sector)">
+                  <span class="sector-label">
+                    <strong class="sector-name">{{ sector.name }}</strong>
+                    <span class="sector-details">
+                      {{ sector.price | currency:'EUR':'symbol':'1.2-2' }}<br>
+                      {{ sector.capacity - sector.soldTickets }} / {{ sector.capacity }} available
+                    </span>
+                  </span>
+                </div>
+              }
+
+            }
+          </div>
+
+          <div class="text-center mt-4">
+            <p class="text-muted small">Click on a sector to select seats</p>
+          </div>
+        </div>
+      }
+
+      @if (viewMode === 'SECTOR' && selectedSector) {
+        <div class="sector-view">
+
+          <div class="d-flex justify-content-between align-items-center mb-4 p-2 bg-light rounded">
+            <button class="btn btn-outline-secondary" (click)="goBackToHall()">
+              Back to Hall
+            </button>
+            <div class="text-end">
+              <h4 class="fw-bold m-0">{{ selectedSector.name }}</h4>
+              <span class="text-muted small">
+                Price: <strong>{{ selectedSector.price | currency:'EUR':'symbol':'1.2-2' }}</strong> |
+                Available: <strong>{{ selectedSector.capacity - selectedSector.soldTickets }}
+                / {{ selectedSector.capacity }}</strong>
+              </span>
+            </div>
+          </div>
+
+          @if (selectedSector.type === 'SEATING') {
+            <div class="seat-grid-container">
+              <div class="seat-grid"
+                   [style.grid-template-columns]="'repeat(' + gridColumns + ', minmax(1.5rem, 1fr))'"
+                   [style.grid-template-rows]="'repeat(' + gridRows + ')'">
+                @for (seat of sectorSeats; track seat.seatId) {
+                  <div class="seat"
+                       [style.grid-column]="getRelativeX(seat.positionX)"
+                       [style.grid-row]="getRelativeY(seat.positionY)"
+                       [class.selected]="isSeatSelected(seat.seatId)"
+                       [class.sold]="seat.status === 'SOLD'"
+                       [class.held]="seat.status === 'HELD'"
+                       (click)="seat.status === 'AVAILABLE' && toggleSeat(seat.seatId)"
+                       [title]="'Row ' + seat.rowNumber + ', Seat ' + seat.seatNumber">
+                  </div>
+                }
+              </div>
+            </div>
+
+            <div class="legend d-flex justify-content-center gap-4 my-4">
+              <div class="legend-item"><span class="box available"></span> Available</div>
+              <div class="legend-item"><span class="box selected"></span> Selected</div>
+              <div class="legend-item"><span class="box held"></span> Held</div>
+              <div class="legend-item"><span class="box sold"></span> Sold</div>
+            </div>
+          } @else if (selectedSector.type === 'STANDING') {
+            <div class="text-center my-5">
+              <h3>Standing Area</h3>
+              <div class="d-flex justify-content-center align-items-center gap-3 mt-3">
+                <label for="ticketQuantity">Tickets:</label>
+                <input type="number" id="ticketQuantity"
+                       [(ngModel)]="currentStandingQuantity"
+                       min="0" class="form-control" style="width: 80px;">
+              </div>
+            </div>
+          }
+        </div>
+      }
+      @if (selections.size > 0) {
+        <div class="selection-summary mt-4 mb-5">
+          <h4 class="fw-bold mb-3">Your Selection</h4>
+          <div class="list-group mb-4">
+            @for (item of selections.values(); track item.sectorId) {
+              <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                  <span class="fw-bold">{{ item.name }}</span>
+                  @if (item.type === 'SEATING') {
+                    <span class="ms-2 text-muted">({{ item.seatIds?.length }} seat(s))</span>
+                  } @else {
+                    <span class="ms-2 text-muted">({{ item.quantity }} ticket(s))</span>
+                  }
+                </div>
+                <button class="btn btn-sm btn-outline-danger" (click)="removeFromSector(item.sectorId)">
+                  Remove
+                </button>
+              </div>
+            }
+          </div>
+
+           <div class="d-grid gap-2">
+             <button class="btn app-btn-primary btn-lg fw-bold" (click)="createSeatHoldAndGoToCheckout('purchase')">
+               Go to Purchase
+             </button>
+
+             <button class="btn app-btn-outline btn-lg fw-bold" (click)="createSeatHoldAndGoToCheckout('reservation')">
+               Go to Reservation
+             </button>
+
+             <div class="text-center text-muted small mb-3 fw-semibold">
+               <i class="bi bi-info-circle-fill text-primary me-1"></i>
+               Maximum 10 tickets allowed per performance.
+             </div>
+           </div>
+
+        </div>
+      }
+    }
+
+    @if (!loading && !hallLayout && !errorMessage) {
+      <div class="text-center my-5">
+        <div class="alert alert-info">
+          Could not load hall layout. Please try again later.
+        </div>
+      </div>
+    }
+  </div>
+</div>

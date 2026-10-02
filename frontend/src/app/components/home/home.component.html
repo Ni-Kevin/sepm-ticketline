@@ -1,0 +1,96 @@
+<section class="hero">
+  <div class="container hero-content">
+    <span class="hero-badge">Ticketline 4.0</span>
+    <h1>Find Your Next Event</h1>
+    <p>Discover the most popular events of the month and stay up to date with the latest news in one place.</p>
+
+    <div class="hero-actions">
+      @if (!authService.isLoggedIn()) {
+        <a class="btn app-btn-home" routerLink="/login" role="button">Login</a>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="container app-page pb-4">
+  <section>
+    <app-page-header title="Top 10 Events" subtitle="Top ten events by ticket sales for the selected month">
+      <div actions>
+        <a routerLink="/events" class="btn app-btn-outline btn-sm">All Events</a>
+      </div>
+    </app-page-header>
+
+    @if (topEventsInfoMessage) {
+      <app-alert-message type="info">{{ topEventsInfoMessage }}</app-alert-message>
+    } @else {
+      <section>
+        <div class="row g-3 align-items-end">
+          <div class="col-12 col-md-4">
+            <label class="form-label app-form-label" for="home-month-select">Month</label>
+            <input id="home-month-select" type="month" class="form-control" [(ngModel)]="selectedMonth" (change)="onMonthChange()">
+          </div>
+
+          <div class="col-12 col-md-8">
+            <label class="form-label app-form-label" for="home-genre-select">Genre</label>
+            <select id="home-genre-select" class="form-select" [(ngModel)]="selectedGenre" (change)="onGenreChange()">
+              <option value="">All genres</option>
+              @for (genre of genres; track genre) {
+                <option [value]="genre">{{ genre }}</option>
+              }
+            </select>
+          </div>
+        </div>
+      </section>
+
+      @if (stats) {
+        <section class="mt-4">
+          <h5 class="mb-3">{{ selectedGenre ? selectedGenre + ' - Top 10' : 'Overall Top 10' }}</h5>
+          @if (selectedGenre ? !stats.topByGenre[selectedGenre] || stats.topByGenre[selectedGenre].length === 0 : stats.topOverall.length === 0) {
+            <app-empty-state [message]="selectedGenre ? 'No sales for this genre in selected month.' : 'No ticket sales for this month.'"></app-empty-state>
+          } @else {
+            <div class="bar-list">
+              @for (entry of (selectedGenre ? stats.topByGenre[selectedGenre] : stats.topOverall); track entry.eventId) {
+                <button type="button" class="bar-row" (click)="goToEvent(entry.eventId)">
+                  <span class="bar-title">{{ entry.eventTitle }}</span>
+                  <span class="bar-track">
+                    <span class="bar-fill" [style.width]="barWidth(entry.ticketsSold, maxSales)"></span>
+                  </span>
+                  <span class="bar-value">{{ entry.ticketsSold }}</span>
+                </button>
+              }
+            </div>
+          }
+        </section>
+      }
+    }
+  </section>
+
+  <section class="mt-5">
+      <app-page-header title="Latest News" subtitle="The five newest updates">
+        <div actions>
+          <button type="button" class="btn app-btn-outline btn-sm" (click)="goToNews()">All News</button>
+        </div>
+      </app-page-header>
+
+      @if (latestNews.length > 0) {
+        <div class="app-schedule-list">
+          @for (item of latestNews; track item.id) {
+            <app-news-card
+              [title]="item.title"
+              [summary]="item.summary"
+              [image]="imageSrc(item)">
+              <div newsActions>
+                <a [routerLink]="['/news', item.id]" class="btn app-btn-primary btn-sm">
+                  Details
+                </a>
+              </div>
+            </app-news-card>
+          }
+        </div>
+      } @else if (newsInfoMessage) {
+        <app-alert-message type="info">{{ newsInfoMessage }}</app-alert-message>
+      } @else {
+        <app-empty-state message="No news available right now."></app-empty-state>
+      }
+  </section>
+</section>

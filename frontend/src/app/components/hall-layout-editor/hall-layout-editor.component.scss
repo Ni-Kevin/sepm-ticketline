@@ -1,0 +1,294 @@
+:host {
+  display: block;
+  --accent: #4a154b;
+  --accent-dark: #2f0d30;
+  --accent-muted: #6f5b70;
+  --surface: #ffffff;
+  --surface-muted: #f4f5f7;
+  --line: #e5e7eb;
+  --text-muted: #667085;
+}
+
+.layout-editor-page {
+  padding: 1.5rem 1rem 3rem;
+}
+
+.layout-editor-shell {
+  max-width: 1680px;
+  margin: 0 auto;
+}
+
+.editor-header-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.editor-body,
+.editor-main {
+  min-width: 0;
+}
+
+.layout-editor-guide {
+  line-height: 1.5;
+}
+
+.layout-editor-guide summary {
+  cursor: pointer;
+  user-select: none;
+}
+
+.layout-editor-guide summary::marker {
+  color: var(--accent-dark);
+}
+
+.layout-editor-guide ol {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+}
+
+.workspace-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+}
+
+.workspace-card {
+  padding: 1.25rem;
+}
+
+.editor-seat-grid {
+  margin-top: 1.5rem;
+}
+
+.workspace-toolbar {
+  display: flex;
+  margin-bottom: 0.75rem;
+  align-items: center;
+  min-height: 3.25rem;
+}
+
+.context-toolbar {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.context-toolbar--inactive {
+  opacity: 1;
+}
+
+.workspace-zoom-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.toolbar-input {
+  border-radius: 0.85rem;
+}
+
+.toolbar-input--name {
+  min-width: 220px;
+}
+
+.toolbar-input--type {
+  width: 140px;
+}
+
+.toolbar-color-input {
+  width: 3rem;
+  min-width: 3rem;
+  height: 2.4rem;
+  padding: 0.2rem;
+  border-radius: 0.85rem;
+}
+
+.toolbar-number-input {
+  width: 5.25rem;
+}
+
+.toolbar-metric {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.toolbar-metric--capacity .toolbar-number-input {
+  width: 6rem;
+}
+
+.toolbar-metric-label {
+  min-width: 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.toolbar-delete-button {
+  white-space: nowrap;
+}
+
+.toolbar-metric--placeholder {
+  visibility: hidden;
+}
+
+.canvas-scroll {
+  position: relative;
+  overflow: auto;
+  padding: 1rem;
+  border-radius: 0.85rem;
+  background: var(--surface-muted);
+  border: 1px solid var(--line);
+  min-height: 720px;
+  max-height: min(82vh, 1100px);
+}
+
+.hall-canvas {
+  --grid-size: 10px;
+  margin: 0 auto;
+  background-color: #fff;
+  background-image:
+    linear-gradient(to right, rgba(17, 24, 39, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(17, 24, 39, 0.08) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+  border: 1px solid #b9c0cc;
+  border-radius: 1rem;
+}
+
+.hall-area {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0.35rem;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 0.75rem;
+  color: #fff;
+  text-align: left;
+  transition: filter 0.15s ease, outline-color 0.15s ease;
+  overflow: hidden;
+  cursor: move;
+}
+
+.hall-area:hover {
+  filter: brightness(1.05);
+}
+
+.hall-area.selected-area {
+  outline: 3px solid rgba(74, 21, 75, 0.35);
+  outline-offset: 3px;
+}
+
+.hall-area.unassigned-area {
+  border-style: dashed;
+}
+
+.hall-area-label,
+.hall-area-badge {
+  max-width: 100%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.seat-preview-layer {
+  position: absolute;
+  inset: 0.25rem;
+  pointer-events: none;
+}
+
+.seat-preview-dot {
+  position: absolute;
+  width: 0.28rem;
+  height: 0.28rem;
+  margin-left: -0.14rem;
+  margin-top: -0.14rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.zoom-toolbar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.85rem;
+}
+
+.zoom-button,
+.zoom-value {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 999px;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.7rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.zoom-value {
+  min-width: 4.5rem;
+}
+
+.hall-area-badge {
+  align-self: flex-end;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  font-size: 0.68rem;
+}
+
+.hall-area-resize-handle {
+  position: absolute;
+  right: 0.2rem;
+  bottom: 0.2rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-right: 2px solid rgba(255, 255, 255, 0.95);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.95);
+  opacity: 0.9;
+  cursor: se-resize;
+}
+
+@media (max-width: 768px) {
+  .layout-editor-page {
+    padding: 1rem 0.75rem 2rem;
+  }
+
+  .editor-header-actions,
+  .workspace-toolbar,
+  .context-toolbar,
+  .workspace-zoom-toolbar {
+    width: 100%;
+  }
+
+  .editor-header-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .context-toolbar {
+    align-items: stretch;
+  }
+
+  .toolbar-input--name,
+  .toolbar-input--type,
+  .toolbar-metric,
+  .toolbar-number-input,
+  .toolbar-delete-button {
+    width: 100%;
+  }
+
+  .toolbar-metric {
+    gap: 0.5rem;
+  }
+}

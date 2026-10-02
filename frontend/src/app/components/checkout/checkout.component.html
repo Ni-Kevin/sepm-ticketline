@@ -1,0 +1,185 @@
+<section class="hero"></section>
+
+<div class="container mt-4">
+  @if (loading) {
+    <div class="text-center my-5">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  }
+
+  @if (!loading && errorMessage) {
+    <div class="alert alert-danger mb-4">
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (!loading && activeSummary) {
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header py-3">
+            <h2 class="mb-1">{{ activeSummary.eventName }}</h2>
+            <p class="mb-0">
+              Performance: {{activeSummary.performanceName}} | Starttime: {{ activeSummary.performanceStartTime | date:'medium' }}<br>
+              Artists: {{ activeSummary.artists.join(', ') }}<br>
+              {{ activeSummary.hallName }} - {{ activeSummary.venueName }}
+            </p>
+          </div>
+
+           <div class="card-body p-4">
+              <h4 class="mb-3">{{ mode === CheckoutMode.purchase ? 'Your Purchase' : mode === CheckoutMode.purchaseFromReservation ? 'Your Purchase from Reservation' : 'Your Reservation' }}</h4>
+
+              <div class="table-responsive mb-4">
+
+               <table class="table align-middle">
+                 <thead>
+                 <tr>
+                   <th>Sector/Seat</th>
+                   <th class="text-center">Quantity</th>
+                   <th class="text-end">Price per Unit</th>
+                   <th class="text-end">Total</th>
+                 </tr>
+                 </thead>
+                 <tbody>
+                   @for (item of activeSummary.items; track $index) {
+                     <tr>
+                       <td>
+                         <span>{{ item.sectorName }}</span>
+                         @if (item.seatName) {
+                           <span class="ms-2">({{ item.seatName }})</span>
+                         }
+                       </td>
+                       <td class="text-center">{{ item.quantity }}</td>
+                       <td class="text-end">{{ item.price / item.quantity | currency:'EUR' }}</td>
+                       <td class="text-end">{{ (item.price) | currency:'EUR' }}</td>
+                     </tr>
+                   }
+                 </tbody>
+                 <tfoot>
+                 <tr>
+                   <td colspan="3" class="text-end">Total Amount:</td>
+                   <td class="text-end">{{ activeSummary.totalAmount | currency:'EUR' }}</td>
+                 </tr>
+                 </tfoot>
+                </table>
+              </div>
+
+              @if (mode === CheckoutMode.reservation) {
+                <div class="alert alert-info py-3 text-center mb-4">
+                  <strong>Important Information:</strong><br>
+                  You must collect your tickets at least 30 minutes before the performance starts, otherwise the reservation will be invalid.
+                </div>
+              }
+
+              @if (activeSummary.earliestExpiration && mode !== CheckoutMode.purchaseFromReservation) {
+               <div class="alert alert-warning py-2 text-center mb-4">
+                 Your cart expires at {{ activeSummary.earliestExpiration | date:'shortTime' }}
+               </div>
+             }
+
+              <hr class="my-4">
+
+              @if (mode === CheckoutMode.purchase || mode === CheckoutMode.purchaseFromReservation) {
+                <div class="payment-section">
+                  <h5 class="mb-3">Payment Method</h5>
+                  <div class="d-flex flex-wrap gap-3 mb-4">
+                    @for (method of paymentMethods; track method.id) {
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" [name]="'paymentMethod'"
+                               [id]="'method-' + method.id" [value]="method.id"
+                               [(ngModel)]="selectedPaymentMethod">
+                        <label class="form-check-label" [for]="'method-' + method.id">
+                          {{ method.label }}
+                        </label>
+                      </div>
+                    }
+                  </div>
+
+                  @if (selectedPaymentMethod === 'CREDIT_CARD') {
+                    <div class="mb-4 p-3 border rounded bg-light">
+                      <h6 class="fw-bold mb-3">Credit Card Details</h6>
+                      <div class="row g-3">
+                        <div class="col-md-6">
+                          <label class="form-label small">Card Number</label>
+                          <input type="text" class="form-control" [(ngModel)]="paymentDetails['cardNumber']" placeholder="1234 5678 9101 1121" required>
+                        </div>
+                        <div class="col-md-3">
+                          <label class="form-label small">Expiry (MM/YY)</label>
+                          <input type="text" class="form-control" [(ngModel)]="paymentDetails['expiry']" placeholder="12/26" required>
+                        </div>
+                        <div class="col-md-3">
+                          <label class="form-label small">CVV</label>
+                          <input type="text" class="form-control" [(ngModel)]="paymentDetails['cvv']" placeholder="123" required>
+                        </div>
+                      </div>
+                    </div>
+                  }
+
+                  @if (selectedPaymentMethod === 'PAYPAL') {
+                    <div class="mb-4 p-3 border rounded bg-light">
+                      <h6 class="fw-bold mb-3">PayPal Account</h6>
+                      <div class="row g-3">
+                        <div class="col-md-12">
+                          <label class="form-label small">PayPal Email</label>
+                          <input type="email" class="form-control" [(ngModel)]="paymentDetails['email']" placeholder="user@example.com" required>
+                        </div>
+                      </div>
+                    </div>
+                  }
+
+                  @if (selectedPaymentMethod === 'KLARNA') {
+                    <div class="mb-4 p-3 border rounded bg-light">
+                      <h6 class="fw-bold mb-3">Klarna Payment</h6>
+                      <div class="row g-3">
+                        <div class="col-md-12">
+                          <label class="form-label small">Klarna Email</label>
+                          <input type="email" class="form-control" [(ngModel)]="paymentDetails['email']" placeholder="user@example.com" required>
+                        </div>
+                      </div>
+                    </div>
+                  }
+
+                <div class="d-grid gap-2 mt-4">
+                  <button class="btn app-btn-primary btn-lg"
+                          [disabled]="!isPaymentInfoValid() || loading"
+                          (click)="mode === CheckoutMode.purchaseFromReservation ? onPurchaseFromReservation() : onPurchase()">
+                    {{ mode === CheckoutMode.purchaseFromReservation ? 'Confirm Purchase from Reservation' : 'Confirm Purchase' }}
+                  </button>
+                  <button class="btn app-btn-outline-secondary"
+                          [disabled]="loading"
+                          (click)="onCancel()">
+                    Cancel Checkout
+                  </button>
+                </div>
+              </div>
+              } @else {
+                <div class="d-grid gap-2 mt-4">
+                  <button class="btn app-btn-primary btn-lg"
+                          [disabled]="loading"
+                          (click)="onReserve()">
+                    Confirm Reservation
+                  </button>
+                  <button class="btn app-btn-outline-secondary"
+                          [disabled]="loading"
+                          (click)="onCancel()">
+                    Cancel Reservation
+                  </button>
+                </div>
+              }
+           </div>
+         </div>
+       </div>
+     </div>
+   }
+
+  @if (!loading && !activeSummary && !errorMessage) {
+    <div class="text-center my-5">
+      <div class="alert alert-info mb-3">
+        You have no active reservations for this performance.
+      </div>
+      <a routerLink="/events" class="btn btn-outline-primary">Return to Events</a>
+    </div>
+  }
+</div>

@@ -1,0 +1,15 @@
+:host {
+  display: block;
+}
+
+.venue-form__required-hint {
+  color: var(--bs-secondary-color);
+  font-size: 0.875rem;
+}
+
+.venue-form__readonly-country {
+  background-color: var(--bs-secondary-bg);
+  color: var(--bs-body-color);
+  cursor: not-allowed;
+  opacity: 1;
+}

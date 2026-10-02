@@ -1,0 +1,35 @@
+<section class="hero"></section>
+
+<section class="seat-grid-card">
+  <div class="seat-grid-card-header">
+    <div>
+      <h5>Seat grid</h5>
+      <p>Click cells to add or remove seats. Hover a cell to see row and seat information.</p>
+    </div>
+    <span class="seat-count-badge">{{ selectedSeatCount }} seats</span>
+  </div>
+
+  @if (selectedArea) {
+    <div class="zoom-toolbar seat-zoom-toolbar">
+      <button type="button" class="zoom-button" (click)="zoomOut.emit()">−</button>
+      <button type="button" class="zoom-value" (click)="resetZoom.emit()">{{ (seatGridZoom * 100) | number:'1.0-0' }}%</button>
+      <button type="button" class="zoom-button" (click)="zoomIn.emit()">+</button>
+    </div>
+
+    <div class="seat-grid-shell">
+      <div class="seat-grid-wrapper">
+        <div class="seat-grid" [style.grid-template-columns]="seatGridTemplateColumns">
+          @for (gridY of seatGridRows; track gridY) {
+            @for (gridX of seatGridColumns; track gridX) {
+              <button type="button"
+                      class="seat-grid-cell"
+                      [class.occupied]="isSeatPlaced(gridX, gridY)"
+                      [attr.title]="getSeatTitle(gridX, gridY)"
+                      (click)="seatToggled.emit({gridX, gridY})"></button>
+            }
+          }
+        </div>
+      </div>
+    </div>
+  }
+</section>

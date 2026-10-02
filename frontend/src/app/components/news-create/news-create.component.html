@@ -1,0 +1,76 @@
+<section class="hero">
+</section>
+
+<section class="app-page app-page--form container pb-4">
+  <app-page-header title="New News Entry" subtitle="Publish a news entry with summary, optional long text, optional publication date, and optional image"></app-page-header>
+
+  @if (errorMessage) {
+    <app-alert-message type="danger" class="mb-3">{{ errorMessage }}</app-alert-message>
+  }
+
+  <form #newsForm="ngForm" class="app-section-card shadow-sm p-4" (ngSubmit)="onCreate(newsForm)">
+    <div class="row g-3">
+      <div class="col-12 col-md-6">
+        <label class="form-label app-form-label" for="title">Title <span class="news-create__required-marker" aria-hidden="true">*</span></label>
+        <input class="form-control" id="title" type="text" name="title" [(ngModel)]="news.title" required
+               [class.is-invalid]="fieldErrors['title']">
+        @if (fieldErrors['title']) {
+          <small class="text-danger">{{ fieldErrors['title'] }}</small>
+        }
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label class="form-label app-form-label" for="published-at">Publication date</label>
+        <input class="form-control" id="published-at" type="datetime-local" name="publishedAt" [(ngModel)]="publishedAt">
+      </div>
+
+      <div class="col-12">
+        <label class="form-label app-form-label" for="summary">Short summary <span class="news-create__required-marker" aria-hidden="true">*</span></label>
+        <textarea class="form-control" id="summary" rows="3" name="summary" [(ngModel)]="news.summary" required
+                  [class.is-invalid]="fieldErrors['summary']"></textarea>
+        @if (fieldErrors['summary']) {
+          <small class="text-danger">{{ fieldErrors['summary'] }}</small>
+        }
+      </div>
+
+      <div class="col-12">
+        <label class="form-label app-form-label" for="text">Long text</label>
+        <textarea class="form-control" id="text" rows="6" name="text" [(ngModel)]="news.text"></textarea>
+      </div>
+
+      <div class="col-12">
+        <label class="form-label app-form-label">Image (optional)</label>
+        <div class="upload-panel">
+          <label class="upload-box" for="news-photo-input">
+            @if (photoPreviewUrl) {
+              <img [src]="photoPreviewUrl" alt="News photo preview" class="photo-preview">
+            } @else {
+              <span>Add image</span>
+            }
+          </label>
+          <input id="news-photo-input" #newsPhotoInput type="file" accept="image/*" (change)="onPhotoSelected($event)" hidden>
+          <div class="photo-actions">
+            <button type="button" class="btn app-btn-primary" (click)="newsPhotoInput.click()">Upload</button>
+            <button type="button" class="btn app-btn-outline" (click)="removeSelectedPhoto(newsPhotoInput)">Delete image</button>
+          </div>
+          @if (selectedPhotoName) {
+            <p class="photo-name text-muted">{{ selectedPhotoName }}</p>
+          }
+          @if (photoErrorMessage) {
+            <small class="text-danger">{{ photoErrorMessage }}</small>
+          }
+          <p class="photo-hint text-muted">Allowed: PNG, JPEG, WebP · Maximum file size: 1 MB</p>
+        </div>
+      </div>
+
+      <div class="col-12 d-flex justify-content-between align-items-end gap-3 flex-wrap">
+        <p class="news-create__required-hint mb-0">Fields marked with <span aria-hidden="true">*</span> are required.</p>
+
+        <div class="d-flex gap-2 justify-content-end">
+          <button type="button" class="btn app-btn-outline" routerLink="/news">Cancel</button>
+          <button type="submit" class="btn app-btn-primary">Create news</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</section>

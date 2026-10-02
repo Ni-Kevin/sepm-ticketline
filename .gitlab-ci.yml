@@ -1,0 +1,31 @@
+image: maven:3-eclipse-temurin-25
+
+variables:
+  GIT_STRATEGY: "clone"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2"
+
+cache:
+  paths:
+    - .m2
+
+stages:
+  - test
+
+test-backend:
+  stage: test
+  script:
+    - cd backend
+    - mvn -B clean install
+
+test-frontend:
+  stage: test
+  image: node:24
+  script:
+    - cd frontend
+    - npm ci --legacy-peer-deps
+    - npm run lint
+    - npm run build
+  artifacts:
+    paths:
+      - frontend/dist
+    expire_in: 1 hour

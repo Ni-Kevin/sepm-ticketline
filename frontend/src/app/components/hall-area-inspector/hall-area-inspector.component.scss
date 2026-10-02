@@ -1,0 +1,67 @@
+:host {
+  display: block;
+  --accent: #4a154b;
+  --surface: #ffffff;
+  --surface-muted: #f4f5f7;
+  --line: #e5e7eb;
+  --text-muted: #667085;
+}
+
+.inspector-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+}
+.inspector-card {
+  padding: 1rem;
+}
+
+.inspector-header {
+  margin-bottom: 1rem;
+}
+
+.inspector-header h6 {
+  margin: 0;
+  font-weight: 700;
+}
+
+.inspector-header p {
+  margin: 0.35rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.editor-form .form-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.editor-form .form-control,
+.editor-form .form-select {
+  border-radius: 0.85rem;
+}
+
+.empty-state {
+  border: 1px dashed #d0d5dd;
+  border-radius: 0.9rem;
+  padding: 1rem;
+  text-align: center;
+  background: #fafafa;
+}
+
+.empty-state strong {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.empty-state p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.empty-state.compact {
+  padding: 1.25rem 1rem;
+}

@@ -1,0 +1,14 @@
+.app-form-label {
+  font-size: var(--app-font-size-xs);
+  font-weight: var(--app-font-weight-semibold);
+  text-transform: uppercase;
+  color: var(--app-text-muted);
+}
+
+.app-form-section-title {
+  font-weight: var(--app-font-weight-bold);
+  margin-bottom: 0;
+  color: var(--app-text-muted);
+  border-bottom: 1px solid var(--app-border);
+  padding-bottom: var(--app-spacing-sm);
+}

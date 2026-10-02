@@ -1,0 +1,71 @@
+<section class="hero">
+</section>
+
+<div class="container app-page app-page--form">
+  <app-page-header
+    [title]="editMode ? 'Edit venue' : 'Create venue'"
+    [subtitle]="editMode ? 'Update venue details and address information.' : 'Add a new event location to the system.'">
+  </app-page-header>
+
+  @if (error) {
+    <app-alert-message type="danger">{{ errorMessage }}</app-alert-message>
+  }
+
+  <div class="card shadow-sm border-0 app-section-card">
+    <div class="card-body p-4">
+      <form [formGroup]="venueForm" (ngSubmit)="saveVenue()">
+        <div class="row g-4">
+          <div class="col-md-6">
+            <label class="form-label app-form-label">Venue Name <span class="venue-form__required-marker" aria-hidden="true">*</span></label>
+            <input class="form-control" formControlName="name" placeholder="e.g. Grand Hall"
+                   [class.is-invalid]="fieldErrors['name']">
+            @if (fieldErrors['name']) {
+              <small class="text-danger">{{ fieldErrors['name'] }}</small>
+            }
+          </div>
+          <div class="col-md-6">
+            <label class="form-label app-form-label">Street Address <span class="venue-form__required-marker" aria-hidden="true">*</span></label>
+            <input class="form-control" formControlName="street" placeholder="e.g. Main Street 1"
+                   [class.is-invalid]="fieldErrors['street']">
+            @if (fieldErrors['street']) {
+              <small class="text-danger">{{ fieldErrors['street'] }}</small>
+            }
+          </div>
+          <div class="col-md-4">
+            <label class="form-label app-form-label">Zip Code <span class="venue-form__required-marker" aria-hidden="true">*</span></label>
+            <input class="form-control" formControlName="zipCode" placeholder="e.g. 1010"
+                   [class.is-invalid]="fieldErrors['zipCode']">
+            @if (fieldErrors['zipCode']) {
+              <small class="text-danger">{{ fieldErrors['zipCode'] }}</small>
+            }
+          </div>
+          <div class="col-md-4">
+            <label class="form-label app-form-label">City <span class="venue-form__required-marker" aria-hidden="true">*</span></label>
+            <input class="form-control" formControlName="city" placeholder="e.g. Vienna"
+                   [class.is-invalid]="fieldErrors['city']">
+            @if (fieldErrors['city']) {
+              <small class="text-danger">{{ fieldErrors['city'] }}</small>
+            }
+          </div>
+          <div class="col-md-4">
+            <label class="form-label app-form-label">Country</label>
+            <input class="form-control venue-form__readonly-country" [value]="country" disabled>
+          </div>
+        </div>
+
+        <hr class="my-4 text-muted">
+
+        <div class="d-flex justify-content-between align-items-end gap-3 flex-wrap">
+          <p class="venue-form__required-hint mb-0">Fields marked with <span aria-hidden="true">*</span> are required.</p>
+
+          <div class="d-flex gap-2 justify-content-end">
+            <a class="btn btn-light border" routerLink="/admin/venues">Cancel</a>
+            <button class="btn app-btn-primary px-4" type="submit">
+              {{ editMode ? 'Save changes' : 'Create venue' }}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

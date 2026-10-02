@@ -1,0 +1,24 @@
+.advanced-search-title {
+  font-weight: 700;
+}
+
+.advanced-search-group-title {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.event-genre-search {
+  border-left: 1px solid var(--app-border, #dee2e6) !important;
+  max-width: 220px;
+}
+
+@media (max-width: 576px) {
+  .event-genre-search {
+    max-width: none;
+    width: 100%;
+  }
+}

@@ -1,0 +1,59 @@
+<section class="hero">
+</section>
+
+<section class="artists-body container app-page pb-4">
+  <app-search-filters
+    placeholder="Search artists"
+    buttonLabel="Search Artists"
+    [showFilters]="false"
+    [(query)]="query"
+    (search)="onSearch($event)">
+  </app-search-filters>
+
+  <app-page-header title="Artists" subtitle="Browse available artists and search by name." class="mt-4">
+    <div actions>
+      @if (authService.isAdmin()) {
+        <button type="button" class="btn app-btn-primary" routerLink="/admin/artists/new">+ New Artist</button>
+      }
+    </div>
+  </app-page-header>
+
+  @if (errorMessage) {
+    <app-alert-message type="danger" class="mb-3">{{ errorMessage }}</app-alert-message>
+  }
+
+  @if (isLoading) {
+    <div class="app-section-card shadow-sm p-4 text-center text-muted">
+      Loading artists...
+    </div>
+  } @else if (!hasSearched) {
+    <app-empty-state
+      label="No search yet"
+      message="Start with a name to search the artist catalog.">
+    </app-empty-state>
+  } @else if (artists.length === 0) {
+    <app-empty-state
+      message="Try another search term or create a new artist in the admin area.">
+    </app-empty-state>
+  } @else {
+    <div class="app-schedule-list">
+      @for (artist of paginatedArtists; track artist.id ?? artist.artistName) {
+        <app-artist-card [artist]="artist">
+          <ng-container artistActions>
+            <button type="button" class="btn app-btn-primary"
+                    (click)="goToPerformances(artist)">
+              View Performances
+            </button>
+          </ng-container>
+        </app-artist-card>
+      }
+    </div>
+
+    <app-pagination
+      [currentPage]="currentPage"
+      [totalPages]="totalPages"
+      ariaLabel="Artist pagination"
+      (pageChange)="onPageChanged($event)">
+    </app-pagination>
+  }
+</section>

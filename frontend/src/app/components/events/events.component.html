@@ -1,0 +1,144 @@
+<section class="hero">
+</section>
+
+<section class="events-body container app-page pb-4">
+  <app-search-filters
+    placeholder="Search events"
+    buttonLabel="Search Events"
+    [query]="searchQuery"
+    (queryChange)="onSearchQueryChanged($event)"
+    (search)="onSearchTriggered()">
+    <select searchInline
+            class="form-select event-genre-search"
+            aria-label="Genre"
+            [(ngModel)]="genre"
+            [ngModelOptions]="{standalone: true}">
+      <option value="">All genres</option>
+      @for (genre of genres; track genre) {
+        <option [value]="genre">{{ genre }}</option>
+      }
+    </select>
+    <button type="button" class="btn app-btn-outline btn-sm" (click)="toggleAdvancedFilters()">
+      {{ advancedFiltersOpen ? 'Hide Advanced Search' : 'Advanced Search' }}
+    </button>
+  </app-search-filters>
+
+  @if (advancedFiltersOpen) {
+    <section class="app-section-card shadow-sm p-3 mb-3">
+      <h6 class="advanced-search-title mb-2">Advanced Search</h6>
+
+      <div class="advanced-search-group mb-3">
+        <p class="advanced-search-group-title">Date Range</p>
+        <div class="row g-3">
+          <div class="col-12 col-md-4">
+            <label class="form-label app-form-label" for="date-from">Date From</label>
+            <input id="date-from" type="date" class="form-control" [(ngModel)]="dateFrom"
+                   [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="col-12 col-md-4">
+            <label class="form-label app-form-label" for="date-to">Date To</label>
+            <input id="date-to" type="date" class="form-control" [(ngModel)]="dateTo"
+                   [ngModelOptions]="{standalone: true}">
+          </div>
+        </div>
+      </div>
+
+      <div class="advanced-search-group mb-3">
+        <p class="advanced-search-group-title">Venue</p>
+        <div class="row g-3">
+          <div class="col-12 col-md-4">
+            <label class="form-label app-form-label" for="hall-name">Hall Name</label>
+            <input id="hall-name" type="text" class="form-control" placeholder="Hall"
+                   [(ngModel)]="hallName" [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="col-12 col-md-4">
+            <label class="form-label app-form-label" for="venue-street">Street</label>
+            <input id="venue-street" type="text" class="form-control" placeholder="Street"
+                   [(ngModel)]="venueStreet" [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="col-12 col-md-4">
+            <label class="form-label app-form-label" for="venue-city">City</label>
+            <input id="venue-city" type="text" class="form-control" placeholder="City"
+                   [(ngModel)]="venueCity" [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="col-12 col-md-4">
+            <label class="form-label app-form-label" for="venue-zip-code">ZIP</label>
+            <input id="venue-zip-code" type="text" class="form-control" placeholder="ZIP"
+                   [(ngModel)]="venueZipCode" [ngModelOptions]="{standalone: true}">
+          </div>
+        </div>
+      </div>
+
+      <div class="advanced-search-group mb-3">
+        <p class="advanced-search-group-title">Price</p>
+        <div class="row g-3">
+          <div class="col-12 col-md-4">
+            <label class="form-label app-form-label" for="start-price-min">Start Price (min)</label>
+            <input id="start-price-min" type="number" min="0" step="0.01" class="form-control" [(ngModel)]="startPriceMin"
+                   [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="col-12 col-md-4">
+            <label class="form-label app-form-label" for="start-price-max">Start Price (max)</label>
+            <input id="start-price-max" type="number" min="0" step="0.01" class="form-control" [(ngModel)]="startPriceMax"
+                   [ngModelOptions]="{standalone: true}">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 d-flex gap-2 justify-content-end">
+        <button type="button" class="btn app-btn-outline" (click)="resetFilters()">Reset Filters</button>
+        <button type="button" class="btn app-btn-primary" (click)="onSearchTriggered()">Apply Filters</button>
+      </div>
+    </section>
+  }
+
+  @if (successMessage) {
+    <app-alert-message
+      type="success" class="mb-3">{{ successMessage }}
+    </app-alert-message>
+  }
+
+  <app-page-header title="Events & Shows" subtitle="Don't miss out on these amazing experiences happening near you">
+    <div actions>
+      @if (isAdmin()) {
+        <button type="button" class="btn app-btn-primary" routerLink="/admin/events/new">+ New Event</button>
+      }
+    </div>
+  </app-page-header>
+
+  @if (errorMessage) {
+    <app-alert-message type="danger" class="mb-3">{{ errorMessage }}</app-alert-message>
+  }
+
+  @if (events.length > 0) {
+    <div class="app-schedule-list">
+      @for (event of events; track event.id) {
+        <app-event-card
+          [startTime]="event.startTime"
+          [title]="event.title"
+          [image]="event.image">
+          <ng-container eventContent>
+            <p><strong>Genre:</strong> {{ event.genre || '-' }}</p>
+            <p [title]="event.description">{{ event.description }}</p>
+          </ng-container>
+          <ng-container eventActions>
+            <button type="button" class="btn app-btn-primary"
+                    (click)="onBuyTickets(event.id)">
+              Buy Tickets
+            </button>
+          </ng-container>
+        </app-event-card>
+      }
+    </div>
+
+    <app-pagination
+      [currentPage]="currentPage"
+      [totalPages]="totalPages"
+      ariaLabel="Event pagination"
+      (pageChange)="onPageChanged($event)">
+    </app-pagination>
+  } @else {
+    <app-empty-state
+      [message]="searchQuery.trim() ? 'No events match your search.' : 'No events available yet.'"></app-empty-state>
+  }
+</section>
