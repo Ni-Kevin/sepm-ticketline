@@ -1,0 +1,66 @@
+@if (error) {
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Error! </strong> {{ errorMessage }}
+    <button type="button" (click)="vanishError()" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+}
+
+<section class="app-page container py-4">
+  <app-page-header title="News" subtitle="Latest announcements and updates">
+    @if (isAdmin()) {
+      <div actions>
+        <a class="btn app-btn-primary" routerLink="/admin/news/new">+ Create news</a>
+      </div>
+    }
+  </app-page-header>
+
+  <div class="row g-4">
+    @for (news of newsEntries; track news.id) {
+      <div class="col-12 col-md-6 col-xl-4">
+        <article class="news-card app-section-card shadow-sm h-100">
+          @if (imageSrc(news); as imageSrc) {
+            <img class="news-card__image" [src]="imageSrc" alt="News image">
+          }
+
+          <div class="news-card__content p-4 d-flex flex-column">
+            <p class="news-card__date mb-2">{{ formatPublishedAt(news.publishedAt) }}</p>
+            <h3 class="news-card__title mb-2 text-wrap text-break">{{ news.title }}</h3>
+            <p class="news-card__summary mb-4 text-wrap text-break">{{ news.summary }}</p>
+            <div class="news-card__actions mt-auto">
+              <button (click)="openExistingNewsModal(news.id, newsDetailsModal)" type="button" class="btn app-btn-outline">
+                Details
+              </button>
+            </div>
+          </div>
+        </article>
+      </div>
+    } @empty {
+      <div class="col-12">
+        <app-empty-state label="News" message="No news available yet."></app-empty-state>
+      </div>
+    }
+  </div>
+
+  <ng-template #newsDetailsModal let-modal>
+    <div class="modal-header">
+      <div>
+        <h5 id="news-details-title" class="modal-title">{{ currentNews.title }}</h5>
+        <p class="text-muted mb-0">{{ formatPublishedAt(currentNews.publishedAt) }}</p>
+      </div>
+    </div>
+    <div class="modal-body">
+      @if (imageSrc(currentNews); as imageSrc) {
+        <img class="news-modal__image mb-3" [src]="imageSrc" alt="News image">
+      }
+      <p class="lead">{{ currentNews.summary }}</p>
+      @if (currentNews.text) {
+        <p class="mb-0 whitespace-preline">{{ currentNews.text }}</p>
+      }
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn app-btn-outline" (click)="modal.dismiss('close')">Close</button>
+    </div>
+  </ng-template>
+</section>

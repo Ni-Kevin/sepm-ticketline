@@ -1,0 +1,54 @@
+<section class="hero">
+</section>
+
+<section class="app-page app-page--form container pb-4">
+  <app-page-header title="Add Artist" subtitle="Create a new artist for upcoming performances"></app-page-header>
+
+  @if (infoMessage) {
+    <app-alert-message type="success" class="mb-3">{{ infoMessage }}</app-alert-message>
+  }
+
+  @if (errorMessage) {
+    <app-alert-message type="danger" class="mb-3">{{ errorMessage }}</app-alert-message>
+  }
+
+  <form class="app-section-card shadow-sm p-4" (ngSubmit)="onCreate()">
+    <div class="row g-3">
+      <div class="col-12 col-md-6">
+        <label class="form-label app-form-label" for="first-name">First Name <span class="artist-create__required-marker" aria-hidden="true">*</span></label>
+        <input class="form-control" id="first-name" type="text" name="firstName" [(ngModel)]="artist.firstName" required
+               [class.is-invalid]="fieldErrors['firstName']">
+        @if (fieldErrors['firstName']) {
+          <small class="text-danger">{{ fieldErrors['firstName'] }}</small>
+        }
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label class="form-label app-form-label" for="last-name">Last Name <span class="artist-create__required-marker" aria-hidden="true">*</span></label>
+        <input class="form-control" id="last-name" type="text" name="lastName" [(ngModel)]="artist.lastName" required
+               [class.is-invalid]="fieldErrors['lastName']">
+        @if (fieldErrors['lastName']) {
+          <small class="text-danger">{{ fieldErrors['lastName'] }}</small>
+        }
+      </div>
+
+      <div class="col-12">
+        <label class="form-label app-form-label" for="artist-name">Artist Name <span class="artist-create__required-marker" aria-hidden="true">*</span></label>
+        <input class="form-control" id="artist-name" type="text" name="artistName" [(ngModel)]="artist.artistName" required
+               [class.is-invalid]="fieldErrors['artistName']">
+        @if (fieldErrors['artistName']) {
+          <small class="text-danger">{{ fieldErrors['artistName'] }}</small>
+        }
+      </div>
+
+      <div class="col-12 d-flex justify-content-between align-items-end gap-3 flex-wrap">
+        <p class="artist-create__required-hint mb-0">Fields marked with <span aria-hidden="true">*</span> are required.</p>
+
+        <div class="d-flex justify-content-end gap-2 flex-wrap">
+          <button type="button" class="btn app-btn-outline" (click)="location.back()">Cancel</button>
+          <button type="submit" class="btn app-btn-primary">Create artist</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</section>

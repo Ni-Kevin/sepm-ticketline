@@ -1,0 +1,59 @@
+<section class="hero">
+</section>
+
+<div class="container app-page">
+  <app-page-header
+    title="Venues"
+    subtitle="Manage all event locations and addresses.">
+    <a actions class="btn app-btn-primary" routerLink="/admin/venues/create">Create venue</a>
+  </app-page-header>
+
+  @if (error) {
+    <app-alert-message type="danger">{{ errorMessage }}</app-alert-message>
+  }
+
+  <div class="card shadow-sm border-0 app-section-card">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+          <tr>
+            <th class="ps-4 border-0">Name</th>
+            <th class="border-0">Address</th>
+            <th class="text-end pe-4 border-0">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+            @for (venue of paginatedVenues; track venue.id) {
+              <tr>
+                <td class="ps-4 fw-medium">{{ venue.name }}</td>
+                <td class="text-muted">
+                  {{ venue.street }}, {{ venue.zipCode }} {{ venue.city }}, {{ venue.country }}
+                </td>
+                <td class="text-end pe-4">
+                  <a class="btn btn-sm app-btn-outline" [routerLink]="['/admin/venues', venue.id, 'edit']">
+                    Edit
+                  </a>
+                </td>
+              </tr>
+            }
+            @if (venues.length === 0) {
+              <tr>
+                <td colspan="3" class="p-0">
+                  <app-empty-state label="Venue" message="No venues available yet."></app-empty-state>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <app-pagination
+    [currentPage]="currentPage"
+    [totalPages]="totalPages"
+    ariaLabel="Venue pagination"
+    (pageChange)="onPageChanged($event)">
+  </app-pagination>
+</div>

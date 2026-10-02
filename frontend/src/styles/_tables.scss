@@ -1,0 +1,39 @@
+.app-empty-state {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--app-text-muted);
+}
+
+.app-empty-state__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  opacity: 0.5;
+  margin-bottom: 0.5rem;
+}
+
+.table {
+  border-collapse: separate;
+  border-spacing: 0;
+
+  thead th {
+    text-transform: uppercase;
+    color: var(--app-accent);
+    font-weight: var(--app-font-weight-regular);
+
+    &:first-child {
+      border-top-left-radius: var(--app-border-radius);
+    }
+    &:last-child {
+      border-top-right-radius: var(--app-border-radius);
+    }
+  }
+  tbody tr:last-child td {
+    &:first-child {
+      border-bottom-left-radius: var(--app-border-radius);
+    }
+    &:last-child {
+      border-bottom-right-radius: var(--app-border-radius);
+    }
+  }
+}

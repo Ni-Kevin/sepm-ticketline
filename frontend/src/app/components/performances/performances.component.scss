@@ -1,0 +1,70 @@
+.performance-action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.performance-started-button {
+  background-color: #9ca3af !important;
+  border-color: #9ca3af !important;
+  color: #ffffff !important;
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+.performance-price-info {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--app-text-muted, #6b7280);
+}
+
+.performance-artists {
+  margin-bottom: 2px;
+  margin-top: 0.75rem;
+}
+
+.performance-genre {
+  margin-bottom: 2px;
+}
+
+.performance-meta {
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.advanced-search-title {
+  font-weight: 700;
+}
+
+.advanced-search-group-title {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.performance-genre-search {
+  border-left: 1px solid var(--app-border, #dee2e6) !important;
+  max-width: 220px;
+}
+
+@media (max-width: 576px) {
+  .performance-genre-search {
+    max-width: none;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .performance-action-buttons {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .performance-meta {
+    white-space: normal;
+  }
+}

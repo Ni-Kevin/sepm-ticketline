@@ -1,0 +1,150 @@
+<section class="hero">
+</section>
+<div class="container app-page app-page--form">
+
+  <app-page-header
+    title="My Profile"
+    subtitle="View and update your account information here">
+  </app-page-header>
+
+  @if (success) {
+    <app-alert-message type="success" class="mb-3">
+      <strong>Success!</strong><br>
+      Your profile was updated.
+    </app-alert-message>
+  }
+  @if (error) {
+    <app-alert-message type="danger" class="mb-3">
+      <strong>A Problem occurred!</strong><br>
+      {{ errorMessage }}
+    </app-alert-message>
+  }
+
+
+  <div class="card shadow-sm border-0 app-section-card">
+    <div class="card-body p-4">
+
+      <form [formGroup]="profileForm" (ngSubmit)="updateUser()">
+
+        <div class="row mb-3 align-items-center">
+          <label class="form-label app-form-label">First Name</label>
+          <div class="col-sm-12">
+            @if (isEditMode) {
+              <input type="text" formControlName="firstName"
+                     class="form-control custom input" id="firstName">
+              @if (fieldErrors['firstName']) {
+                <small class="text-danger">{{ fieldErrors['firstName'] }}</small>
+              }
+            } @else {
+              <p class="ps-2 py-2 mb-0">{{ profileForm.controls.firstName.value }}</p>
+            }
+          </div>
+        </div>
+
+        <div class="row mb-3 align-items-center">
+          <label class="form-label app-form-label">Last Name</label>
+          <div class="col-sm-12">
+            @if (isEditMode) {
+              <input type="text" formControlName="lastName"
+                     class="form-control custom-input" id="lastName">
+              @if (fieldErrors['lastName']) {
+                <small class="text-danger">{{ fieldErrors['lastName'] }}</small>
+              }
+            } @else {
+              <p class="ps-2 py-2 mb-0">{{ profileForm.controls.lastName.value }}</p>
+            }
+          </div>
+        </div>
+
+        <div class="row mb-3 align-items-center">
+          <label class="form-label app-form-label">Email</label>
+          <div class="col-sm-12">
+            @if (isEditMode) {
+              <input type="email" formControlName="email"
+                     class="form-control custom-input" id="email">
+              @if (submitted && profileForm.controls.email.errors) {
+                <div class="error">
+                  @if (fieldErrors['email']) {
+                    <small class="text-danger">{{ fieldErrors['email'] }}</small>
+                  }
+                </div>
+              }
+            } @else {
+              <p class="ps-2 py-2 mb-0">{{ profileForm.controls.email.value }}</p>
+            }
+          </div>
+        </div>
+
+        @if (isEditMode) {
+          <hr class="my-4" style="border-top: 1px solid var(--app-accent-muted);">
+
+          <div class="row mb-3 align-items-center">
+            <label class="form-label app-form-label">Current Password</label>
+            <div class="col-sm-12">
+              <input type="password" formControlName="oldPassword"
+                     class="form-control custom-input" id="oldPassword"
+                     placeholder="Current password to confirm">
+            </div>
+          </div>
+
+          <div class="row mb-3 align-items-center">
+            <label class="form-label app-form-label">New Password</label>
+            <div class="col-sm-12">
+              <input type="password" formControlName="password"
+                     class="form-control custom-input" id="password"
+                     placeholder="Leave blank to keep current">
+              @if (fieldErrors['password']) {
+                <small class="text-danger">{{ fieldErrors['password'] }}</small>
+              }
+            </div>
+          </div>
+
+          <div class="row mb-4 align-items-center">
+            <label class="form-label app-form-label">Confirm Password</label>
+            <div class="col-sm-12">
+              <input type="password" formControlName="passwordConfirmation"
+                     class="form-control custom-input"
+                     id="passwordConfirmation"
+                     placeholder="Repeat your new password">
+              @if (fieldErrors['passwordConfirmation']) {
+                <small class="text-danger">{{ fieldErrors['passwordConfirmation'] }}</small>
+              }
+            </div>
+          </div>
+        }
+        <div class="d-flex gap-2 justify-content-between align-items-center mt-4">
+          <button type="button"
+                  class="btn btn-outline-danger btn-sm"
+                  data-bs-toggle="modal"
+                  data-bs-target="#confirmDelete"
+                  (click)="deleteAccount()"> Delete Account
+          </button>
+          <button type="button" class="btn app-btn-header btn-sm" (click)="toggleEditMode()">
+            {{ isEditMode ? 'Cancel' : 'Edit Profile' }}
+          </button>
+        </div>
+
+        @if (isEditMode) {
+          <div class="row mt-5">
+            <button type="submit" class="btn app-btn-primary">
+              Save Changes
+            </button>
+          </div>
+        }
+
+      </form>
+    </div>
+  </div>
+
+  <app-confirm-delete-dialog
+    id="confirmDelete"
+    tabindex="-1"
+    role="dialog"
+    [deleteWhat]="'delete your account'"
+    [confirmButtonText]="'Delete Account'"
+    (confirm)="onConfirmDelete()"
+    (cancel)="onCancelDelete()">
+  </app-confirm-delete-dialog>
+
+</div>
+

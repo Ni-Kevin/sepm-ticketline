@@ -1,0 +1,56 @@
+:host {
+  display: block;
+}
+
+.app-pagination {
+  align-items: center;
+  display: flex;
+  gap: var(--app-spacing-sm);
+  justify-content: center;
+  margin-top: var(--app-spacing-lg);
+}
+
+.app-pagination__pages {
+  display: flex;
+  gap: var(--app-spacing-xs);
+  justify-content: center;
+  min-width: 22rem;
+}
+
+.app-pagination__button,
+.app-pagination__page {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-border-radius);
+  color: var(--app-accent);
+  font-size: var(--app-font-size-sm);
+  min-width: 2.25rem;
+  padding: 0.4rem 0.65rem;
+}
+
+.app-pagination__button {
+  align-items: center;
+  display: inline-flex;
+  height: 2.25rem;
+  justify-content: center;
+  width: 2.25rem;
+}
+
+.app-pagination__ellipsis {
+  color: var(--app-text-muted);
+  padding: 0.4rem 0.25rem;
+}
+
+.app-pagination__page--active,
+.app-pagination__button:hover:not(:disabled),
+.app-pagination__page:hover:not(:disabled),
+.app-pagination__page--active:hover:not(:disabled) {
+  background: var(--app-accent);
+  border-color: var(--app-accent);
+  color: #fff;
+}
+
+.app-pagination__button:disabled,
+.app-pagination__page:disabled {
+  opacity: 0.55;
+}

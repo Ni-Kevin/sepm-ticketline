@@ -1,0 +1,65 @@
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.bar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.bar-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(120px, 280px) 1fr 48px;
+  gap: 0.75rem;
+  align-items: center;
+  border: 1px solid #e0e3ea;
+  border-radius: 10px;
+  background: #fff;
+  padding: 0.55rem 0.75rem;
+  text-align: left;
+}
+
+.bar-row:hover {
+  border-color: #9aa4b2;
+}
+
+.bar-title {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bar-track {
+  background: #eef1f5;
+  border-radius: 999px;
+  height: 14px;
+  position: relative;
+}
+
+.bar-fill {
+  height: 14px;
+  border-radius: 999px;
+  display: block;
+  background: linear-gradient(90deg, #faf5ff, var(--app-accent));
+}
+
+.bar-value {
+  text-align: right;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .bar-row {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+
+  .bar-value {
+    text-align: left;
+  }
+}

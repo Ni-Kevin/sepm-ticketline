@@ -1,0 +1,68 @@
+:root {
+  --app-accent: #44153E;
+  --app-accent-dark: #200A1D;
+  --app-accent-light: #6A2D6B;
+  --app-accent-hover: #8B4D8E;
+  --app-accent-muted: #6f5b70;
+
+  --app-bg: whitesmoke;
+  --app-surface: #fff;
+  --app-surface-muted: #f4f5f7;
+
+  --app-border: #e5e7eb;
+
+  --app-text-muted: #7a6b7a;
+  --app-text-dark: black;
+
+  --app-radius: 0.5rem;
+  --app-border-radius: 0.4rem;
+  --app-form-width: 800px;
+  --app-form-width-sm: 480px;
+  --app-form-width-lg: 1100px;
+
+  --app-error: #AA5042;
+  --app-error-bg: #fff5f5;
+  --app-success: #5A6B4A;
+  --app-success-bg: #f0fff4;
+  --app-warning: #E9D758;
+  --app-warning-bg: #fffdf0;
+  --app-info: #8499B1;
+  --app-info-bg: #f0faff;
+
+
+  /* Header */
+  --app-height-nav: 4rem;
+  --app-nav-border: #e4d9ec;
+  --app-nav-link-color: grey;
+  --app-nav-link-color-active: black;
+
+  --app-spacing-nav: 0.75rem 1.25rem;
+  --app-gap-nav: 1rem;
+
+  --app-letter-spacing-wide: 0.08em;
+
+  /* Font Size */
+  --app-font-size-xs: 0.75rem;
+  --app-font-size-sm: 0.875rem;
+  --app-font-size-base: 1rem;
+  --app-font-size-lg: 1.05rem;
+  --app-font-size-xl: 1.25rem;
+  --app-font-size-2xl: 1.5rem;
+  --app-font-size-3xl: 1.7rem;
+  --app-font-size-5xl: 2rem;
+
+  /* Font Weights */
+  --app-font-weight-light: 300;
+  --app-font-weight-regular: 400;
+  --app-font-weight-medium: 500;
+  --app-font-weight-semibold: 600;
+  --app-font-weight-bold: 700;
+
+  /* Spacing */
+  --app-spacing-xs: 0.25rem;
+  --app-spacing-sm: 0.5rem;
+  --app-spacing-smmd: 0.75rem;
+  --app-spacing-md: 1rem;
+  --app-spacing-lg: 1.5rem;
+  --app-spacing-xl: 2rem;
+}

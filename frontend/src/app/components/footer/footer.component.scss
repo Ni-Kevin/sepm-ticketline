@@ -1,0 +1,17 @@
+.app-footer {
+  min-height: var(--app-height-nav);
+  padding: var(--app-spacing-nav);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--app-surface);
+  border-top: 1px solid var(--app-border);
+  margin-top: var(--app-spacing-xl);
+
+}
+
+.app-footer p {
+  margin: 0;
+  color: var(--app-text-muted);
+  font-size: var(--app-font-size-sm);
+}

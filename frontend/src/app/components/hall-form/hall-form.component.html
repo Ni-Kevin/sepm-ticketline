@@ -1,0 +1,86 @@
+<section class="hero">
+</section>
+
+<div class="container app-page app-page--form">
+  <app-page-header
+    [title]="editMode ? 'Edit hall' : 'Create hall'"
+    [subtitle]="editMode ? 'Update hall details and venue assignment.' : 'Add a new hall configuration to an existing venue.'">
+  </app-page-header>
+
+  @if (error) {
+    <app-alert-message type="danger">{{ errorMessage }}</app-alert-message>
+  }
+
+  @if (editMode && dimensionsLocked) {
+    <app-alert-message type="info">{{ dimensionsLockMessage }}</app-alert-message>
+  }
+
+  <div class="card shadow-sm border-0 app-section-card">
+    <div class="card-body p-4">
+      <form [formGroup]="hallForm" (ngSubmit)="saveHall()">
+        <div class="row g-4">
+          <div class="col-md-6">
+            <label class="form-label app-form-label">Hall Name <span class="hall-form__required-marker" aria-hidden="true">*</span></label>
+            <input class="form-control" formControlName="name" placeholder="e.g. Main Auditorium"
+                   [class.is-invalid]="fieldErrors['name']">
+            @if (fieldErrors['name']) {
+              <small class="text-danger">{{ fieldErrors['name'] }}</small>
+            }
+          </div>
+          <div class="col-md-6">
+            <label class="form-label app-form-label">Venue <span class="hall-form__required-marker" aria-hidden="true">*</span></label>
+            <select class="form-select" formControlName="venueId" [class.is-invalid]="fieldErrors['venueId']">
+              <option [ngValue]="null">Select venue</option>
+              @for (venue of venues; track venue.id) {
+                <option [ngValue]="venue.id">{{ venue.name }}</option>
+              }
+            </select>
+            @if (fieldErrors['venueId']) {
+              <small class="text-danger">{{ fieldErrors['venueId'] }}</small>
+            }
+          </div>
+
+          <div class="col-12 mt-4 mb-2">
+            <h6 class="app-form-section-title">Dimensions (meters)</h6>
+          </div>
+
+          <div class="col-md-6 mt-2">
+            <label class="form-label app-form-label">Width <span class="hall-form__required-marker" aria-hidden="true">*</span></label>
+            <div class="input-group">
+              <input type="number" class="form-control" formControlName="width" min="1"
+                     [class.is-invalid]="fieldErrors['width']">
+              <span class="input-group-text bg-light text-muted">m</span>
+            </div>
+            @if (fieldErrors['width']) {
+              <small class="text-danger">{{ fieldErrors['width'] }}</small>
+            }
+          </div>
+          <div class="col-md-6 mt-2">
+            <label class="form-label app-form-label">Length <span class="hall-form__required-marker" aria-hidden="true">*</span></label>
+            <div class="input-group">
+              <input type="number" class="form-control" formControlName="length" min="1"
+                     [class.is-invalid]="fieldErrors['length']">
+              <span class="input-group-text bg-light text-muted">m</span>
+            </div>
+            @if (fieldErrors['length']) {
+              <small class="text-danger">{{ fieldErrors['length'] }}</small>
+            }
+          </div>
+        </div>
+
+        <hr class="my-4 text-muted">
+
+        <div class="d-flex justify-content-between align-items-end gap-3 flex-wrap">
+          <p class="hall-form__required-hint mb-0">Fields marked with <span aria-hidden="true">*</span> are required.</p>
+
+          <div class="d-flex gap-2 justify-content-end">
+            <a class="btn btn-light border" routerLink="/admin/halls">Cancel</a>
+            <button class="btn app-btn-primary px-4" type="submit">
+              {{ editMode ? 'Save changes' : 'Create hall' }}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

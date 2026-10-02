@@ -1,0 +1,25 @@
+<div class="row app-search-panel">
+  <div class="col-12">
+    <div class="input-group shadow-sm app-search-row">
+      <input
+        class="form-control"
+        type="text"
+        [placeholder]="placeholder"
+        aria-label="Search"
+        [value]="query"
+        (input)="onQueryInput($any($event.target).value)"
+        (keyup.enter)="triggerSearch()">
+      <ng-content select="[searchInline]"></ng-content>
+      <button type="button" class="btn app-btn-primary" (click)="triggerSearch()">{{ buttonLabel }}</button>
+    </div>
+  </div>
+
+  @if (showFilters) {
+    <div class="col-12 mt-3">
+      <div class="app-filter-row">
+        <span class="app-filter-row__label">Filters:</span>
+        <ng-content></ng-content>
+      </div>
+    </div>
+  }
+</div>

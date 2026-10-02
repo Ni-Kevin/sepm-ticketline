@@ -1,0 +1,142 @@
+<section class="hero"></section>
+
+<section class="container app-page pb-4 performances-body">
+  <app-search-filters
+    placeholder="Search performances"
+    buttonLabel="Search Performances"
+    [query]="searchQuery"
+    (queryChange)="onSearchQueryChanged($event)"
+    (search)="onSearchTriggered()">
+    <select searchInline
+            class="form-select performance-genre-search"
+            aria-label="Genre"
+            [(ngModel)]="genre"
+            [ngModelOptions]="{standalone: true}">
+      <option value="">All genres</option>
+      @for (genre of genres; track genre) {
+        <option [value]="genre">{{ genre }}</option>
+      }
+    </select>
+    <button type="button" class="btn app-btn-outline btn-sm" (click)="toggleAdvancedFilters()">
+      {{ advancedFiltersOpen ? 'Hide Advanced Search' : 'Advanced Search' }}
+    </button>
+  </app-search-filters>
+
+  @if (advancedFiltersOpen) {
+    <section class="app-section-card shadow-sm p-3 mb-3">
+      <h6 class="advanced-search-title mb-2">Advanced Search</h6>
+
+      <div class="advanced-search-group mb-3">
+        <p class="advanced-search-group-title">Date Range</p>
+        <div class="row g-3">
+          <div class="col-12 col-md-3">
+            <label class="form-label app-form-label" for="start-time-from">Start From</label>
+            <input id="start-time-from" type="datetime-local" class="form-control" [(ngModel)]="startTimeFrom"
+                   [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="col-12 col-md-3">
+            <label class="form-label app-form-label" for="end-time-to">End To</label>
+            <input id="end-time-to" type="datetime-local" class="form-control" [(ngModel)]="endTimeTo"
+                   [ngModelOptions]="{standalone: true}">
+          </div>
+        </div>
+      </div>
+
+      <div class="advanced-search-group mb-3">
+        <p class="advanced-search-group-title">Hall</p>
+        <div class="row g-3">
+          <div class="col-12 col-md-5">
+            <label class="form-label app-form-label" for="hall-name">Hall Name</label>
+            <input id="hall-name" type="text" class="form-control" placeholder="Hall"
+                   [(ngModel)]="hallName" [ngModelOptions]="{standalone: true}">
+          </div>
+        </div>
+      </div>
+
+      <div class="advanced-search-group mb-3">
+        <p class="advanced-search-group-title">Price</p>
+        <div class="row g-3">
+          <div class="col-12 col-md-3">
+            <label class="form-label app-form-label" for="start-price-min">Start Price (min)</label>
+            <input id="start-price-min" type="number" min="0" step="0.01" class="form-control" [(ngModel)]="startPriceMin"
+                   [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="col-12 col-md-3">
+            <label class="form-label app-form-label" for="start-price-max">Start Price (max)</label>
+            <input id="start-price-max" type="number" min="0" step="0.01" class="form-control" [(ngModel)]="startPriceMax"
+                   [ngModelOptions]="{standalone: true}">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 d-flex gap-2 justify-content-end">
+        <button type="button" class="btn app-btn-outline" (click)="resetAdvancedFilters()">Reset Filters</button>
+        <button type="button" class="btn app-btn-primary" (click)="onSearchTriggered()">Apply Filters</button>
+      </div>
+    </section>
+  }
+
+  <app-page-header
+    [title]="artistId ? 'Performances by ' + (artistName ?? '...') : 'Performances'">
+  </app-page-header>
+
+  @if (errorMessage) {
+    <app-alert-message type="danger" class="mb-3">{{ errorMessage }}</app-alert-message>
+  }
+
+  @if (!errorMessage && performances.length > 0) {
+    <div class="app-schedule-list">
+      @for (performance of paginatedPerformances; track performance.id) {
+        <app-event-card
+          [startTime]="performance.startTime"
+          [title]="performance.performanceName"
+          [showImage]="false">
+          <ng-container eventContent>
+            <p class="performance-artists"><strong>Artists:</strong> {{ performance.artistNames?.join(', ') || '-' }}</p>
+            <p class="performance-genre"><strong>Genre:</strong> {{ performance.genre || '-' }}</p>
+            <p class="performance-meta">
+              <strong>Time:</strong> {{ performance.startTime | date:'HH:mm' }}
+              |
+              <strong>Hall:</strong> {{ performance.hallName || '-' }}
+            </p>
+          </ng-container>
+          <ng-container eventActions>
+            <div class="performance-action-buttons">
+              <button type="button"
+                      class="btn app-btn-primary"
+                      [class.performance-started-button]="isPerformanceStarted(performance)"
+                      [attr.data-bs-toggle]="isPerformanceStarted(performance) ? 'modal' : null"
+                      [attr.data-bs-target]="isPerformanceStarted(performance) ? '#performanceStartedDialog' : null"
+                      (click)="selectSeats(performance)">
+                Select Seats
+              </button>
+            </div>
+            <p class="performance-price-info">
+              Startprice: {{ performance.startPrice | number:'1.2-2' }} EUR
+            </p>
+          </ng-container>
+        </app-event-card>
+      }
+    </div>
+
+    <app-pagination
+      [currentPage]="currentPage"
+      [totalPages]="totalPages"
+      ariaLabel="Performance pagination"
+      (pageChange)="onPageChanged($event)">
+    </app-pagination>
+  } @else if (!errorMessage) {
+    <app-empty-state
+      [message]="searchQuery.trim() ? 'No performances match your search.' : 'No performances are available yet.'"></app-empty-state>
+  }
+
+  <app-confirm-delete-dialog
+    id="performanceStartedDialog"
+    tabindex="-1"
+    role="dialog"
+    [title]="'Performance already started'"
+    [message]="'Performance has already started and tickets can no longer be purchased.'"
+    [confirmButtonText]="'OK'"
+    [showCancelButton]="false">
+  </app-confirm-delete-dialog>
+</section>

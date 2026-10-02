@@ -1,0 +1,38 @@
+@if (normalizedTotalPages > 1) {
+  <nav class="app-pagination" [attr.aria-label]="ariaLabel">
+    <button
+      type="button"
+      class="app-pagination__button"
+      [disabled]="disabled || normalizedCurrentPage === 1"
+      (click)="selectPage(normalizedCurrentPage - 1)"
+      aria-label="Previous page">
+      <i class="bi bi-caret-left-fill"></i>
+    </button>
+
+    <div class="app-pagination__pages">
+      @for (item of pageItems; track $index) {
+        @if (item === '...') {
+          <span class="app-pagination__ellipsis">...</span>
+        } @else {
+          <button
+            type="button"
+            class="app-pagination__page"
+            [class.app-pagination__page--active]="item === normalizedCurrentPage"
+            [disabled]="disabled"
+            (click)="selectPage(+item)">
+            {{ item }}
+          </button>
+        }
+      }
+    </div>
+
+    <button
+      type="button"
+      class="app-pagination__button"
+      [disabled]="disabled || normalizedCurrentPage === normalizedTotalPages"
+      (click)="selectPage(normalizedCurrentPage + 1)"
+      aria-label="Next page">
+      <i class="bi bi-caret-right-fill"></i>
+    </button>
+  </nav>
+}

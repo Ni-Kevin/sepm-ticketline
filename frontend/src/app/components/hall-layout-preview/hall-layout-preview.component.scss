@@ -1,0 +1,159 @@
+:host {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  --surface: #ffffff;
+  --surface-muted: #f4f5f7;
+  --line: #e5e7eb;
+}
+
+.workspace-card {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 1.25rem;
+}
+
+.workspace-zoom-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.canvas-scroll {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: auto;
+  padding: 1rem;
+  border-radius: 0.85rem;
+  background: var(--surface-muted);
+  border: 1px solid var(--line);
+  height: 520px;
+}
+
+.hall-canvas {
+  --grid-size: 10px;
+  margin: 0 auto;
+  background-color: #fff;
+  background-image:
+    linear-gradient(to right, rgba(17, 24, 39, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(17, 24, 39, 0.08) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+  border: 1px solid #b9c0cc;
+  border-radius: 1rem;
+}
+
+.hall-area {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0.35rem;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 0.75rem;
+  color: #fff;
+  text-align: left;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.hall-area--interactive {
+  cursor: move;
+}
+
+.hall-area.selected-area {
+  outline: 3px solid rgba(74, 21, 75, 0.35);
+  outline-offset: 3px;
+}
+
+.hall-area.unassigned-area {
+  border-style: dashed;
+}
+
+.hall-area-label,
+.hall-area-badge {
+  max-width: 100%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  position: relative;
+  z-index: 1;
+}
+
+.hall-area-label {
+  display: inline-block;
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.45rem;
+  background: rgba(15, 23, 42, 0.5);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+}
+
+.hall-area-badge {
+  align-self: flex-end;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.4);
+  font-size: 0.68rem;
+}
+
+.seat-preview-layer {
+  position: absolute;
+  inset: 0.25rem;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.seat-preview-dot {
+  position: absolute;
+  width: 0.28rem;
+  height: 0.28rem;
+  margin-left: -0.14rem;
+  margin-top: -0.14rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.hall-area-resize-handle {
+  position: absolute;
+  right: 0.2rem;
+  bottom: 0.2rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-right: 2px solid rgba(255, 255, 255, 0.95);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.95);
+  opacity: 0.9;
+  cursor: se-resize;
+}
+
+.zoom-toolbar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.zoom-button,
+.zoom-value {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 999px;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.7rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.zoom-value {
+  min-width: 4.5rem;
+}

@@ -1,0 +1,83 @@
+.top-nav {
+  min-height: var(--app-height-nav);
+  padding: var(--app-spacing-nav);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--app-gap-nav);
+  background: var(--app-surface);
+  border-bottom: 1px solid var(--app-border);
+}
+
+.brand {
+  color: var(--app-text-dark);
+  font-size: var(--app-font-size-5xl);
+  line-height: 1;
+  text-decoration: none;
+}
+
+.main-links,
+.right-links,
+.admin-links,
+.account-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.right-links {
+  margin-left: auto;
+}
+
+.admin-links {
+  padding-right: 1rem;
+  border-right: 1px solid var(--app-nav-border);
+}
+
+.admin-label {
+  font-size: 100%;
+  font-weight: 700;
+  letter-spacing: var(--app-letter-spacing-wide);
+  text-transform: uppercase;
+  color: var(--app-text-muted);
+}
+
+.main-links a,
+.admin-links a {
+  color: var(--app-nav-link-color);
+  text-decoration: none;
+  font-size: var(--app-font-size-lg);
+}
+
+.main-links a:hover,
+.main-links a.active,
+.admin-links a:hover,
+.admin-links a.active {
+  color: var(--app-nav-link-color-active);
+}
+
+
+@media (max-width: 900px) {
+  .top-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .brand {
+    width: 100%;
+    text-align: center;
+    font-size: var(--app-font-size-3xl);
+  }
+
+  .right-links {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-left: 0;
+  }
+
+  .admin-links {
+    padding-right: 0;
+    border-right: 0;
+  }
+}

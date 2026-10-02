@@ -1,0 +1,21 @@
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="confirm-delete-dialog-title">{{ title }}</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      {{ message || ('Do you really want to continue to ' + deleteWhat + '?') }}
+    </div>
+    <div class="modal-footer">
+      @if (showCancelButton) {
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Abort
+        </button>
+      }
+      <button type="button" class="btn app-btn-primary" (click)="confirm.emit()" data-bs-dismiss="modal">
+        {{ confirmButtonText }}
+      </button>
+    </div>
+  </div>
+</div>

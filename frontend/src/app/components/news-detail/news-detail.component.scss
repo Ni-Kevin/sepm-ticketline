@@ -1,0 +1,28 @@
+.news-detail-container {
+  background-color: var(--app-background-card, #fff);
+  border: 1px solid var(--app-border);
+
+  .img-fluid {
+    border: 2px solid var(--app-border);
+    transition: transform 0.2s ease-in-out;
+
+    &:hover {
+      transform: scale(1.005);
+    }
+  }
+
+  .news-summary {
+    color: var(--app-accent);
+    border-left: 4px solid var(--app-accent);
+    padding-left: var(--app-spacing-md);
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .news-text {
+    line-height: 1.6;
+    font-size: var(--app-font-size-md, 1rem);
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+}

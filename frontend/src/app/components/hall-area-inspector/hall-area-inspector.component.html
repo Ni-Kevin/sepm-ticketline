@@ -1,0 +1,78 @@
+@if (activeSidebarTab === 'overview') {
+  <section class="inspector-card">
+      <div class="inspector-header">
+        <div>
+          <h6>Selected area</h6>
+          <p>Adjust the selected area and its linked ticketing data.</p>
+        </div>
+      </div>
+
+      @if (selectedArea && layout) {
+        <form class="editor-form">
+          <div class="mb-3">
+            <label class="form-label">Type</label>
+            <select class="form-select" [ngModel]="selectedArea.type" name="type" (ngModelChange)="updateSelectedAreaType($event)">
+              <option value="SEATING">Seating</option>
+              <option value="STANDING">Standing</option>
+              <option value="STAGE">Stage</option>
+            </select>
+          </div>
+
+          @if (selectedSector) {
+            <div class="mb-3">
+              <label class="form-label">Name</label>
+              <input type="text" class="form-control" [ngModel]="selectedSector.name" name="sectorName" (ngModelChange)="updateSelectedSectorName($event)" (blur)="normalizeSelectedSector()">
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label class="form-label">Sector type</label>
+                <input type="text" class="form-control" [value]="selectedSector.type" disabled>
+              </div>
+              <div class="col-6">
+                <label class="form-label">Color</label>
+                <input type="color" class="form-control form-control-color w-100" [(ngModel)]="selectedSector.color" name="sectorColor" (ngModelChange)="normalizeSelectedSector()">
+              </div>
+            </div>
+
+            @if (selectedSector.type === 'STANDING') {
+              <div class="mb-3">
+                <label class="form-label">Standing capacity</label>
+                <input type="number" class="form-control" [(ngModel)]="selectedSector.capacity" name="sectorCapacity" min="1" (ngModelChange)="normalizeSelectedSector()">
+                <div class="form-text">How many people can stand in this area.</div>
+              </div>
+            }
+          }
+
+          <div class="row g-3 mb-3">
+            <div class="col-6">
+              <label class="form-label">X</label>
+              <input type="number" class="form-control" [ngModel]="selectedArea.positionX" name="posX" min="0" [attr.max]="layout.width - 1" readonly>
+            </div>
+            <div class="col-6">
+              <label class="form-label">Y</label>
+              <input type="number" class="form-control" [ngModel]="selectedArea.positionY" name="posY" min="0" [attr.max]="layout.length - 1" readonly>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-6">
+              <label class="form-label">Width</label>
+              <input type="number" class="form-control" [ngModel]="selectedArea.width" name="width" min="1" [attr.max]="getSelectedAreaMaxWidth()" readonly>
+            </div>
+            <div class="col-6">
+              <label class="form-label">Length</label>
+              <input type="number" class="form-control" [ngModel]="selectedArea.length" name="length" min="1" [attr.max]="getSelectedAreaMaxLength()" readonly>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-outline-danger w-100" (click)="deleteSelectedArea()">Remove area</button>
+        </form>
+      } @else {
+        <div class="empty-state">
+          <strong>Select an area</strong>
+          <p>Pick an existing area or click inside the hall to edit it.</p>
+        </div>
+      }
+    </section>
+}

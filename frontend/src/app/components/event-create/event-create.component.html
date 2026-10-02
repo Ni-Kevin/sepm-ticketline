@@ -1,0 +1,127 @@
+<section class="hero">
+</section>
+
+<section class="app-page app-page--form container pb-4">
+  <app-page-header title="New Event" subtitle="Create event details, time range, and linked performances"></app-page-header>
+
+  @if (errorMessage) {
+    <app-alert-message type="danger" class="mb-3">{{ errorMessage }}</app-alert-message>
+  }
+
+  <form class="app-section-card shadow-sm p-4" (ngSubmit)="onCreate()">
+    <div class="row g-3">
+      <div class="col-12 col-md-6">
+        <label class="form-label app-form-label" for="title">Title <span class="event-create__required-marker" aria-hidden="true">*</span></label>
+        <input class="form-control" id="title" type="text" name="title" [(ngModel)]="event.title" required
+               [class.is-invalid]="fieldErrors['title']">
+        @if (fieldErrors['title']) {
+          <small class="text-danger">{{ fieldErrors['title'] }}</small>
+        }
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label class="form-label app-form-label" for="genre">Genre <span class="event-create__required-marker" aria-hidden="true">*</span></label>
+        <select class="form-select" id="genre" name="genre" [(ngModel)]="event.genre" required
+                [class.is-invalid]="fieldErrors['genre']">
+          <option value="" disabled>Select genre</option>
+          @for (genre of genres; track genre) {
+            <option [value]="genre">{{ genre }}</option>
+          }
+        </select>
+        @if (fieldErrors['genre']) {
+          <small class="text-danger">{{ fieldErrors['genre'] }}</small>
+        }
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label class="form-label app-form-label" for="start-time">Start Time <span class="event-create__required-marker" aria-hidden="true">*</span></label>
+        <input class="form-control" id="start-time" type="datetime-local" name="startTime" [(ngModel)]="startTime" required
+               [class.is-invalid]="fieldErrors['startTime']">
+        @if (fieldErrors['startTime']) {
+          <small class="text-danger">{{ fieldErrors['startTime'] }}</small>
+        }
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label class="form-label app-form-label" for="end-time">End Time <span class="event-create__required-marker" aria-hidden="true">*</span></label>
+        <input class="form-control" id="end-time" type="datetime-local" name="endTime" [(ngModel)]="endTime" required
+               [class.is-invalid]="fieldErrors['endTime']">
+        @if (fieldErrors['endTime']) {
+          <small class="text-danger">{{ fieldErrors['endTime'] }}</small>
+        }
+      </div>
+
+      <div class="col-12">
+        <label class="form-label app-form-label" for="description">Description</label>
+        <textarea class="form-control" id="description" rows="4" name="description" [(ngModel)]="event.description"></textarea>
+      </div>
+
+      <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-2 gap-2 flex-wrap">
+          <label class="app-form-section-title mb-0">Performances <span class="event-create__required-marker" aria-hidden="true">*</span></label>
+          <button type="button" class="btn app-btn-primary" (click)="goToPerformanceCreate()">+ Performance</button>
+        </div>
+        <div class="chips-input-box" [class.is-invalid]="fieldErrors['performances']">
+          @if (performances.length === 0) {
+            <span class="chips-placeholder">Added performances</span>
+          }
+          @for (performance of performances; track performance.id) {
+            <span class="data-chip">
+              {{ performance.performanceName || 'Performance' }} - {{ performance.startTime | date:'dd.MM.yyyy HH:mm' }} - {{ performance.hallName }}
+              <button type="button" (click)="removePerformance(performance.id)">x</button>
+            </span>
+          }
+        </div>
+        @if (fieldErrors['performances']) {
+          <small class="text-danger">{{ fieldErrors['performances'] }}</small>
+        }
+      </div>
+
+      <div class="col-12">
+        <label class="app-form-section-title mb-2">Artists</label>
+        <div class="chips-input-box">
+          @if (selectedArtists.length === 0) {
+            <span class="chips-placeholder">Artists from performances</span>
+          }
+          @for (artist of selectedArtists; track artist.id) {
+            <span class="data-chip">{{ artist.artistName }} ({{ artist.firstName }} {{ artist.lastName }})</span>
+          }
+        </div>
+      </div>
+
+      <div class="col-12">
+        <label class="form-label app-form-label">Photo</label>
+        <div class="upload-panel">
+          <label class="upload-box" for="event-photo-input">
+            @if (photoPreviewUrl) {
+              <img [src]="photoPreviewUrl" alt="Event photo preview" class="photo-preview">
+            } @else {
+              <span>Add photo</span>
+            }
+          </label>
+          <input id="event-photo-input" #eventPhotoInput type="file" accept="image/*" (change)="onPhotoSelected($event)" hidden>
+          <div class="photo-actions">
+            <button type="button" class="btn app-btn-primary" (click)="eventPhotoInput.click()">Upload</button>
+            <button type="button" class="btn app-btn-outline" (click)="removeSelectedPhoto(eventPhotoInput)">Delete photo</button>
+          </div>
+          @if (selectedPhotoName) {
+            <p class="photo-name text-muted">{{ selectedPhotoName }}</p>
+          }
+          @if (photoErrorMessage) {
+            <small class="text-danger">{{ photoErrorMessage }}</small>
+          }
+          <p class="photo-hint text-muted">Allowed: PNG, JPEG, WebP · Maximum file size: 1 MB</p>
+        </div>
+      </div>
+
+      <div class="col-12 d-flex justify-content-between align-items-end gap-3 flex-wrap mt-2">
+        <p class="event-create__required-hint mb-0">Fields marked with <span aria-hidden="true">*</span> are required.</p>
+
+        <div class="d-flex justify-content-end gap-2 flex-wrap">
+          <button type="button" class="btn app-btn-outline" (click)="cancelCreate()">Cancel</button>
+          <button type="submit" class="btn app-btn-primary">Create event</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</section>

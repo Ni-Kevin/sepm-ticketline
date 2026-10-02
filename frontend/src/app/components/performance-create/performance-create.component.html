@@ -1,0 +1,194 @@
+<section class="hero">
+</section>
+
+<section class="app-page app-page--form container pb-4">
+  <app-page-header title="Add Performance" subtitle="Set start time, artists, hall, and pricing"></app-page-header>
+
+  @if (infoMessage) {
+    <app-alert-message type="success" class="mb-3">{{ infoMessage }}</app-alert-message>
+  }
+
+  @if (errorMessage) {
+    <app-alert-message type="danger" class="mb-3">{{ errorMessage }}</app-alert-message>
+  }
+
+  <form class="app-section-card shadow-sm p-4" (ngSubmit)="onCreate()">
+    <div class="row g-3">
+      <div class="col-12 col-md-6">
+        <label class="form-label app-form-label" for="performance-name">Performance Name <span class="performance-create__required-marker" aria-hidden="true">*</span></label>
+        <input class="form-control" id="performance-name" type="text" name="performanceName" [(ngModel)]="performanceName" required
+               [class.is-invalid]="fieldErrors['performanceName']">
+        @if (fieldErrors['performanceName']) {
+          <small class="text-danger">{{ fieldErrors['performanceName'] }}</small>
+        }
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label class="form-label app-form-label" for="start-time">Start Time <span class="performance-create__required-marker" aria-hidden="true">*</span></label>
+        <input class="form-control" id="start-time" type="datetime-local" name="startTime" [(ngModel)]="startTime" required
+               [class.is-invalid]="fieldErrors['startTime']">
+        @if (fieldErrors['startTime']) {
+          <small class="text-danger">{{ fieldErrors['startTime'] }}</small>
+        }
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label class="form-label app-form-label">Duration <span class="performance-create__required-marker" aria-hidden="true">*</span></label>
+        <div class="performance-create__duration-box" [class.is-invalid]="fieldErrors['durationHours'] || fieldErrors['durationMinutes']">
+          <div>
+            <label class="performance-create__duration-label" for="duration-hours">Hours</label>
+            <input class="form-control" id="duration-hours" type="number" min="0" name="durationHours" [(ngModel)]="durationHours" required>
+          </div>
+          <div>
+            <label class="performance-create__duration-label" for="duration-minutes">Minutes</label>
+            <input class="form-control" id="duration-minutes" type="number" min="0" max="59" name="durationMinutes" [(ngModel)]="durationMinutes" required>
+          </div>
+        </div>
+        @if (fieldErrors['durationHours']) {
+          <small class="text-danger">{{ fieldErrors['durationHours'] }}</small>
+        }
+        @if (fieldErrors['durationMinutes']) {
+          <small class="text-danger">{{ fieldErrors['durationMinutes'] }}</small>
+        }
+      </div>
+
+      <div class="col-12">
+        <app-alert-message type="info" class="mb-0">Calculated end time: {{ calculatedEndTimeDisplay }}</app-alert-message>
+      </div>
+
+      <div class="col-12">
+        <label class="app-form-section-title mb-2" for="artist-name">Artists <span class="performance-create__required-marker" aria-hidden="true">*</span></label>
+        <div class="artist-area">
+        <div class="field-with-action">
+          <input class="form-control" id="artist-name" type="text" name="artistName" [(ngModel)]="artistName" (input)="onArtistSearch()" placeholder="Search artist"
+                 [class.is-invalid]="fieldErrors['artists']">
+          <button type="button" class="btn app-btn-primary" (click)="goToArtistCreate()">+ Artist</button>
+        </div>
+
+        @if (artistSuggestions.length > 0) {
+          <div class="suggestions-list">
+            @for (artist of artistSuggestions; track artist.id) {
+              <button type="button" class="suggestion-item" (click)="addArtist(artist)">
+                {{ artist.artistName }} ({{ artist.firstName }} {{ artist.lastName }})
+              </button>
+            }
+          </div>
+        }
+
+        @if (selectedArtists.length > 0) {
+          <div class="selected-artists">
+            @for (artist of selectedArtists; track artist.id) {
+              <span class="artist-chip">
+                {{ artist.artistName }} ({{ artist.firstName }} {{ artist.lastName }})
+                <button type="button" (click)="removeArtist(artist.id)">x</button>
+              </span>
+            }
+          </div>
+        }
+        @if (fieldErrors['artists']) {
+          <small class="text-danger">{{ fieldErrors['artists'] }}</small>
+        }
+      </div>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label class="form-label app-form-label" for="hall-id">Hall <span class="performance-create__required-marker" aria-hidden="true">*</span></label>
+        <div class="artist-area">
+          <input
+            class="form-control"
+            id="hall-id"
+            type="text"
+            name="hallQuery"
+            [(ngModel)]="hallQuery"
+            (input)="onHallSearchInput()"
+            placeholder="Search hall"
+            [class.is-invalid]="fieldErrors['hall']">
+
+          @if (hallQuery.trim() && selectedHallId === null && filteredHalls.length > 0) {
+            <div class="suggestions-list">
+              @for (hall of filteredHalls; track hall.id) {
+                <button type="button" class="suggestion-item" (click)="selectHall(hall)">
+                  {{ hall.name }}
+                </button>
+              }
+            </div>
+          }
+          @if (fieldErrors['hall']) {
+            <small class="text-danger">{{ fieldErrors['hall'] }}</small>
+          }
+        </div>
+      </div>
+
+      @if (loadingHallLayout) {
+        <div class="col-12">
+          <app-alert-message type="info">Loading hall layout...</app-alert-message>
+        </div>
+      }
+
+      @if (selectedHallLayout) {
+        <div class="col-12">
+          <div class="hall-pricing-shell">
+            <div class="hall-pricing-head">
+              <h5>Hall layout pricing</h5>
+              <small>{{ selectedHallLayout.name }} • {{ selectedHallLayout.width }}m x {{ selectedHallLayout.length }}m</small>
+            </div>
+
+            <app-hall-layout-preview
+              [layout]="selectedHallLayout"
+              [defaultCanvasZoom]="0.5"
+              [selectable]="true"
+              [selectedArea]="selectedPricingArea ?? undefined"
+              (areaSelected)="onPricingAreaSelected($event.area)">
+            </app-hall-layout-preview>
+
+            <div class="table-responsive sector-pricing-table-wrap">
+              <table class="table table-hover align-middle mb-0 sector-pricing-table">
+                <thead class="table-light">
+                <tr>
+                  <th scope="col">Sector</th>
+                  <th scope="col">Type</th>
+                  <th scope="col" class="text-end">Price</th>
+                </tr>
+                </thead>
+                <tbody>
+                  @for (sectorPrice of sectorPrices; track sectorPrice.sectorId ?? sectorPrice.sectorName; let i = $index) {
+                    <tr [class.sector-price-row--focused]="isSectorPriceFocused(sectorPrice)">
+                      <td class="fw-medium">{{ sectorPrice.sectorName }}</td>
+                      <td>{{ sectorPrice.sectorType }}</td>
+                      <td class="sector-price-cell">
+                        <input class="form-control"
+                               #sectorPriceInput
+                               type="number"
+                               min="0"
+                               step="0.01"
+                               [ngModel]="sectorPrice.price"
+                               [ngModelOptions]="{standalone: true}"
+                               (focus)="focusSectorFromPrice(sectorPrice)"
+                               (ngModelChange)="updateSectorPrice(i, $event)">
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+            @if (!selectedSectorPrice) {
+              <app-alert-message type="info" class="mb-0">Click a seating or standing sector in the layout to focus its row.</app-alert-message>
+            }
+            @if (fieldErrors['sectorPrices']) {
+              <small class="text-danger d-block">{{ fieldErrors['sectorPrices'] }}</small>
+            }
+          </div>
+        </div>
+      }
+
+      <div class="col-12 d-flex justify-content-between align-items-end gap-3 flex-wrap">
+        <p class="performance-create__required-hint mb-0">Fields marked with <span aria-hidden="true">*</span> are required.</p>
+
+        <div class="d-flex justify-content-end gap-2 flex-wrap">
+          <button type="button" class="btn app-btn-outline" (click)="cancelCreate()">Cancel</button>
+          <button type="submit" class="btn app-btn-primary">Add performance</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</section>

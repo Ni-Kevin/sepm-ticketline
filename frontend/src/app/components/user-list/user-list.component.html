@@ -1,0 +1,106 @@
+<section class="hero">
+</section>
+
+<div class="container app-page">
+
+  <app-page-header
+    title="Users"
+    subtitle="Manage all users">
+    <a actions class="btn app-btn-primary" routerLink="/admin/create-user">Create user</a>
+  </app-page-header>
+
+
+  @if (error) {
+    <app-alert-message type="warning" class="mb-3">
+      {{ errorMessage }}
+    </app-alert-message>
+  }
+
+  @if (successMessage) {
+    <app-alert-message type="success" class="mb-3">
+      {{ successMessage }}
+    </app-alert-message>
+  }
+
+
+  @if (loading) {
+    <p>Loading users...</p>
+  } @else {
+    <div class="card shadow-sm border-0">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+            <tr>
+              <th class="ps-4 border-0">Email</th>
+              <th class="border-0">Name</th>
+              <th class="border-0">Role</th>
+              <th class="border-0">Status</th>
+              <th class="text-end pe-4 border-0">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+              @for (user of paginatedUsers; track user.id) {
+                <tr>
+                  <td class="ps-4 fw-medium">{{ user.email }}</td>
+                  <td class="text-muted">{{ user.firstName }} {{ user.lastName }}</td>
+                  <td class="text-muted">{{ getRole(user.role) }}</td>
+                  <td>
+                    <span class="badge rounded-pill"
+                          [ngClass]="user.locked ? 'bg-danger-subtle text-danger' : 'bg-success-subtle text-success'">
+                      {{ getStatus(user) }}
+                    </span>
+                  </td>
+                  <td class="text-end pe-4">
+                    <div class="btn-group" role="group" aria-label="User Actions">
+                      @if (user.email !== currentUserEmail) {
+                        <button type="button"
+                          class="btn btn-sm"
+                          [ngClass]="user.locked ? 'btn-outline-success' : 'btn-outline-danger'"
+                          [title]="user.locked ? 'Unlock' : 'Lock'"
+                          (click)="toggleLock(user)"
+                          data-bs-toggle="modal"
+                          data-bs-target="#confirmLockModal">
+                        <i class="bi" [ngClass]="user.locked ? 'bi-unlock' : 'bi-lock'"></i>
+                        </button>
+                      }
+                      @if (user.email !== currentUserEmail) {
+                        <button type="button" class="btn btn-sm btn-outline-secondary" title="Reset Password"
+                                (click)="sendNewPassword(user)">
+                          <i class="bi bi-asterisk"></i>
+                        </button>
+                      }
+                    </div>
+                  </td>
+                </tr>
+              }
+              @if (users.length === 0) {
+                <tr>
+                  <td colspan="5" class="text-center p-5 text-muted">
+                    <app-empty-state label="Users" message="No users available yet."></app-empty-state>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <app-pagination
+      [currentPage]="currentPage"
+      [totalPages]="totalPages"
+      ariaLabel="User pagination"
+      (pageChange)="onPageChanged($event)">
+    </app-pagination>
+  }
+  <app-confirm-delete-dialog
+    id="confirmLockModal"
+    tabindex="-1"
+    role="dialog"
+    [title]="(confirmAction | titlecase) + ' user'"
+    [deleteWhat]="confirmAction + ' this user'"
+    [confirmButtonText]="confirmAction | titlecase"
+    (confirm)="onConfirmToggleLock()">
+  </app-confirm-delete-dialog>
+</div>

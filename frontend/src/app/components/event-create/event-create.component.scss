@@ -1,0 +1,90 @@
+.event-create__required-hint {
+  color: var(--bs-secondary-color);
+  font-size: 0.875rem;
+}
+
+.chips-input-box {
+  min-height: 2.2rem;
+  border: 1px solid var(--app-border);
+  border-radius: 0.4rem;
+  background: var(--app-surface);
+  padding: 0.25rem 0.35rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.chips-input-box.is-invalid {
+  border-color: var(--bs-danger);
+}
+
+.chips-placeholder {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.data-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.45rem;
+  border: 1px solid var(--app-border);
+  border-radius: 0.4rem;
+  background: var(--app-surface);
+  color: black;
+  font-size: 0.9rem;
+}
+
+.data-chip button {
+  border: 0;
+  background: transparent;
+  color: black;
+  padding: 0;
+  line-height: 1;
+}
+
+.upload-panel {
+  max-width: 320px;
+}
+
+.upload-box {
+  height: 150px;
+  border: 1px solid;
+  border-radius: 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.photo-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-actions {
+  margin-top: 0.7rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.photo-name {
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
+}
+
+.photo-hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 768px) {
+  .upload-panel {
+    max-width: 100%;
+  }
+}

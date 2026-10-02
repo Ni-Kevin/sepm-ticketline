@@ -1,0 +1,70 @@
+<section class="hero"></section>
+
+<section class="container app-page pb-4">
+  <app-page-header title="Top Events" subtitle="Top ten events by ticket sales for the selected month"></app-page-header>
+
+  <section class="app-section-card shadow-sm p-3 mb-3 controls">
+    <div class="row g-3 align-items-end">
+      <div class="col-12 col-md-4">
+        <label class="form-label app-form-label" for="month-select">Month</label>
+        <input id="month-select" type="month" class="form-control" [(ngModel)]="selectedMonth" (change)="loadStats()">
+      </div>
+
+      <div class="col-12 col-md-8">
+        <label class="form-label app-form-label" for="genre-select">Genre</label>
+        <select id="genre-select" class="form-select" [(ngModel)]="selectedGenre" (change)="loadStats()">
+          <option value="">All genres</option>
+          @for (genre of genres; track genre) {
+            <option [value]="genre">{{ genre }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  </section>
+
+  @if (errorMessage) {
+    <app-alert-message type="danger" class="mb-3">{{ errorMessage }}</app-alert-message>
+  }
+
+  @if (stats) {
+    <section class="app-section-card shadow-sm p-3 mb-4">
+      <h5>Overall Top 10</h5>
+      @if (stats.topOverall.length === 0) {
+        <app-empty-state message="No ticket sales for this month."></app-empty-state>
+      } @else {
+        <div class="bar-list">
+          @for (entry of stats.topOverall; track entry.eventId) {
+            <button type="button" class="bar-row" (click)="goToEvent(entry.eventId)">
+              <span class="bar-title">{{ entry.eventTitle }}</span>
+              <span class="bar-track">
+                <span class="bar-fill" [style.width]="barWidth(entry.ticketsSold, maxSales)"></span>
+              </span>
+              <span class="bar-value">{{ entry.ticketsSold }}</span>
+            </button>
+          }
+        </div>
+      }
+    </section>
+
+    @if (selectedGenre) {
+      <section class="app-section-card shadow-sm p-3 mb-3">
+        <h6>{{ selectedGenre }} - Top 10</h6>
+        @if (!stats.topByGenre[selectedGenre] || stats.topByGenre[selectedGenre].length === 0) {
+          <app-empty-state message="No sales for this genre in selected month."></app-empty-state>
+        } @else {
+          <div class="bar-list">
+            @for (entry of stats.topByGenre[selectedGenre]; track entry.eventId) {
+              <button type="button" class="bar-row" (click)="goToEvent(entry.eventId)">
+                <span class="bar-title">{{ entry.eventTitle }}</span>
+                <span class="bar-track">
+                  <span class="bar-fill" [style.width]="barWidth(entry.ticketsSold, maxSales)"></span>
+                </span>
+                <span class="bar-value">{{ entry.ticketsSold }}</span>
+              </button>
+            }
+          </div>
+        }
+      </section>
+    }
+  }
+</section>

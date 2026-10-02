@@ -1,0 +1,65 @@
+.btn {
+  border-radius: var(--app-border-radius);
+}
+
+.btn.app-btn-primary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--app-accent);
+  --bs-btn-border-color: var(--app-accent);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--app-accent-muted);
+  --bs-btn-hover-border-color: var(--app-accent-muted);
+  --bs-btn-focus-shadow-rgb: 74, 21, 75;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--app-accent-muted);
+  --bs-btn-active-border-color: var(--app-accent-muted);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: var(--app-accent);
+  --bs-btn-disabled-border-color: var(--app-accent);
+}
+
+.btn.app-btn-outline {
+  --bs-btn-color: var(--app-accent);
+  --bs-btn-border-color: var(--app-accent);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--app-accent);
+  --bs-btn-hover-border-color: var(--app-accent);
+  --bs-btn-focus-shadow-rgb: 74, 21, 75;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--app-accent-dark);
+  --bs-btn-active-border-color: var(--app-accent-dark);
+  --bs-btn-disabled-color: var(--app-accent);
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: var(--app-accent);
+}
+
+.btn.app-btn-header {
+  --bs-btn-color: var(--app-accent);
+  --bs-btn-border-color: var(--app-accent);
+
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--app-accent-muted);
+  --bs-btn-hover-border-color: var(--app-accent-muted);
+  --bs-btn-focus-shadow-rgb: 74, 21, 75;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--app-accent-muted);
+  --bs-btn-active-border-color: var(--app-accent-muted);
+  --bs-btn-disabled-color: var(--app-accent-muted);
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: var(--app-accent);
+}
+
+.btn.app-btn-home {
+  --bs-btn-color: white;
+  --bs-btn-border-color: white;
+  --bs-btn-hover-bg: var(--app-accent-muted);
+  --bs-btn-hover-border-color: var(--app-accent-muted);
+  --bs-btn-focus-shadow-rgb: 74, 21, 75;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--app-accent-muted);
+  --bs-btn-active-border-color: var(--app-accent-muted);
+  --bs-btn-disabled-color: var(--app-accent-muted);
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: var(--app-accent);
+}
+

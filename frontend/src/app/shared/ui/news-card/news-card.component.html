@@ -1,0 +1,18 @@
+<article class="news-card" [class.no-image]="!image">
+
+  @if (image) {
+    <img class="news-image" [src]="image" alt="News image">
+  } @else {
+    <div class="news-image fallback"></div>
+  }
+
+  <div class="news-content">
+    <h3>{{ title }}</h3>
+    <p>{{ summary }}</p>
+  </div>
+
+
+  <div class="news-action">
+    <ng-content select="[newsActions]"></ng-content>
+  </div>
+</article>

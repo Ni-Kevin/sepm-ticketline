@@ -1,0 +1,64 @@
+<section class="hero">
+</section>
+
+
+<div class="container app-page app-page--form">
+  <app-page-header
+    title="Login">
+  </app-page-header>
+
+  @if (error) {
+    <app-alert-message type="danger" class="mb-3">
+      <strong>Authentication problems!</strong><br>
+      {{ errorMessage }}<br>
+      <small>Note: For security reasons, accounts are locked after 5 consecutive unsuccessful attempts.</small>
+    </app-alert-message>
+  }
+
+
+  <div class="card shadow-sm border-0 app-section-card">
+    <div class="card-body p-4">
+
+      <form [formGroup]="loginForm" (ngSubmit)="loginUser()">
+        <div class="row mb-3 align-items-center">
+          <label class="form-label app-form-label">Username</label>
+          <div class="col-sm-12">
+            <input type="text" name="username" formControlName="username"
+                   class="form-control custom-input" id="inputUsername">
+            @if (fieldErrors['username']) {
+              <small class="text-danger">{{ fieldErrors['username'] }}</small>
+            }
+          </div>
+        </div>
+
+        <div class="row mb-3 align-items-center">
+          <label class="form-label app-form-label">Password</label>
+          <div class="col-sm-12">
+            <input type="password" name="password" formControlName="password"
+                   class="form-control custom-input" id="password">
+            @if (submitted && loginForm.controls.password.errors) {
+              <div class="error">
+                @if (fieldErrors['password']) {
+                  <small class="text-danger">{{ fieldErrors['password'] }}</small>
+                }
+              </div>
+            }
+          </div>
+        </div>
+        <div class="d-flex gap-2 justify-content-between align-items-center mt-4">
+          <a routerLink="/forgot-password" class="text-muted text-decoration-none small">Forgot password?</a>
+          <button type="submit" class="btn app-btn-primary">Login</button>
+
+        </div>
+      </form>
+      <hr class="my-4">
+      <div class="text-center"><p class="mb-0">Don't have an account?</p>
+        <a routerLink="/register"
+           class="btn app-btn-header mt-2">Register Now</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
